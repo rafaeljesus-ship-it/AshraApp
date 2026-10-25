@@ -11,6 +11,12 @@ const trackArt: Record<string, string> = {
   conversas: '/assets/scenes/egypt_cafe.png',
   cultura: '/assets/scenes/rio_christ.png',
 };
+// Scene vignettes (with characters) for the track cards.
+const trackCard: Record<string, string> = {
+  basico: '/assets/vignettes/basico.png',
+  conversas: '/assets/vignettes/conversas.png',
+  cultura: '/assets/vignettes/cultura.png',
+};
 /** Guide of the culture being learned: Fadia (Egypt) or Claudia (Brazil). */
 const guideBust = { 'ar-EG': 'fadia', 'pt-BR': 'claudia' } as const;
 
@@ -83,7 +89,7 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
           return (
             <li key={tr.id}>
               <button className={`card track ${tr.color}`} onClick={onOpenLessons} disabled={tr.comingSoon} aria-disabled={tr.comingSoon}>
-                <img src={trackArt[tr.id]} alt="" className="track-scene" />
+                <img src={trackCard[tr.id]} alt="" className="track-scene" />
                 <span className="grow track-text">
                   <strong className="block">{tr.title[state.native]}</strong>
                   <span>{tr.comingSoon ? s.comingSoon : `${done}/${tr.lessonIds.length} · ${tr.subtitle[state.native]}`}</span>

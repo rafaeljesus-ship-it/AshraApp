@@ -253,3 +253,9 @@ button.card { cursor: pointer; }
 .row-seg button { flex: 1; text-align: center; }
 .result-bg .goal-card { background: rgb(255 255 255 / 0.1); border-color: rgb(224 184 76 / 0.55); color: #fff; }
 .result-bg .goal-card .bar { background: rgb(255 255 255 / 0.2); }
+
+/* Tab bar with illustrated icons */
+.tab-icon { width: 28px; height: 28px; object-fit: contain; filter: grayscale(0.55) opacity(0.8); }
+.tabbar button.active { background: #e7f6ec; color: var(--emerald-dark); }
+.tabbar button.active .tab-icon { filter: none; transform: translateY(-1px) scale(1.08); }
+.welcome > .logo-mark { margin-top: -72px; position: relative; z-index: 1; filter: drop-shadow(0 4px 8px rgb(0 0 0 / 0.2)); }

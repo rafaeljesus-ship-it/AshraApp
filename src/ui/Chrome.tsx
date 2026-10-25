@@ -5,17 +5,17 @@ export type Tab = 'home' | 'lessons' | 'achievements' | 'profile';
 
 export function TabBar({ tab, onTab }: { tab: Tab; onTab: (t: Tab) => void }) {
   const { s } = useApp();
-  const items: { id: Tab; icon: string; label: string }[] = [
-    { id: 'home', icon: '🏠', label: s.tabHome },
-    { id: 'lessons', icon: '📖', label: s.tabLessons },
-    { id: 'achievements', icon: '🏆', label: s.tabAchievements },
-    { id: 'profile', icon: '👤', label: s.tabProfile },
+  const items: { id: Tab; label: string }[] = [
+    { id: 'home', label: s.tabHome },
+    { id: 'lessons', label: s.tabLessons },
+    { id: 'achievements', label: s.tabAchievements },
+    { id: 'profile', label: s.tabProfile },
   ];
   return (
     <nav className="tabbar" aria-label={s.tabs}>
       {items.map((i) => (
         <button key={i.id} className={tab === i.id ? 'active' : ''} aria-current={tab === i.id ? 'page' : undefined} onClick={() => onTab(i.id)}>
-          <span aria-hidden="true">{i.icon}</span>
+          <img src={`/assets/nav/${i.id}.png`} alt="" className="tab-icon" />
           <span>{i.label}</span>
         </button>
       ))}

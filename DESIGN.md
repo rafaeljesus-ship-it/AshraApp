@@ -75,3 +75,19 @@ Origem: pacote `ASHRA_Assets_Refinados` (README_ASSETS.md / README_REFINAMENTO.m
 ## Nur, meta diária e recompensa
 
 Home: cartão "Meta diária" com barra (verde) e texto de quanto falta, abaixo das estatísticas. Resultado: detalhamento do ganho (acertos, conclusão, perfeita, combo) em lista dourada e barra da meta. Perfil: seletor 10/20/30 Nur. O ícone de estrela do pacote de assets segue como símbolo do Nur.
+
+## Integração do pacote `ASHRA-assets` (v3)
+
+Todos os arquivos do pacote têm **no máximo 200–240 px** (miniaturas): servem para celular, mas devem ser regerados em 1024 px antes de produção (ver `docs/PROMPTS_ASSETS_GPT.md`).
+
+| Uso no app | Arquivo | Origem / tratamento |
+|---|---|---|
+| Avatares Ali, Fadia, Mohamed, Nour, Rafa | `public/characters/<id>.png` | `02-personagens/<id>.png` (retratos circulares sobre creme), copiados sem alteração |
+| Marca (boas-vindas) | `public/assets/brand/mark.png` | recorte da flor de `01-marca/logo-ashra.png` sem o texto, fundo removido por flood-fill (ampliada 3× com Lanczos) |
+| Ícones de estatística | `public/assets/icons/{xp,level,achievements,streak}.png` | `06-icones-gamificacao/*`, sem alteração |
+| Ícones da barra inferior | `public/assets/nav/{home,lessons,achievements,profile}.png` | `06-icones-gamificacao/*` com fundo removido por flood-fill, 96 px |
+| Cards de trilha da Home | `public/assets/vignettes/{basico,conversas,cultura}.png` | `04-vinhetas-cena/vinheta-05`, `-01`, `-03` |
+
+**Não integrados:** `avatar-usuario-placeholder.png` (é o rosto do Rafa, não um avatar neutro do usuário), Claudia (`claudia.png` tem fundo rosa e estilo/figurino diferentes do resto; mantido o recorte anterior), pranchas de expressões (rostos de ~45 px), `banners-paisagem` (198×100, menores que os atuais), vinhetas 02/04, cartões de onboarding, `fundos-decorativos`, `nav-bar-fundo-pill.png`, `thumbnail-licao-recomendada.png` e `07-icones-ui/*` (já existentes em resolução menor ou com texto embutido). Falta ícone de **Explorar** na barra (não há aba ainda).
+
+A barra inferior agora mostra o item ativo com fundo verde-claro (os ícones coloridos não têm contraste sobre verde-esmeralda).
