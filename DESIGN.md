@@ -71,3 +71,7 @@ Origem: pacote `ASHRA_Assets_Refinados` (README_ASSETS.md / README_REFINAMENTO.m
 - Bustos de Rafa e Nour: Rafa fica cortado na borda direita e Nour perde a boca ao cortar acima da placa; não foram gerados. Avatares circulares existentes (`public/characters/<id>.png`, recortes da prancha 05) continuam para esses dois.
 - Baixa resolução: cenários 250×100 e ícones ~72 px; ok em celular, ficam suaves em telas muito grandes. Para produção, pedir versões em alta resolução.
 - Mapa, Lições, Onboarding e Recompensa seguem com os cenários SVG até a próxima etapa.
+
+## Nur, meta diária e recompensa
+
+Home: cartão "Meta diária" com barra (verde) e texto de quanto falta, abaixo das estatísticas. Resultado: detalhamento do ganho (acertos, conclusão, perfeita, combo) em lista dourada e barra da meta. Perfil: seletor 10/20/30 Nur. O ícone de estrela do pacote de assets segue como símbolo do Nur.

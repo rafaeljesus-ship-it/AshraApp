@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   applyCompletion, currentStreak, initialState, getPath, levelInfo, lessonStatus, recommendedLessonId,
-  XP_COMPLETION_BONUS, XP_PER_CORRECT, XP_REPLAY,
+  XP_COMPLETION_BONUS, XP_PER_CORRECT, XP_REPLAY, XP_PERFECT_BONUS, comboBonus, dailyProgress,
 } from './progress';
 
 const done = (attemptId: string, today: string, lessonId = 'saudacoes', correct = 6) => ({ attemptId, lessonId, correct, total: 8, today });
@@ -78,5 +78,39 @@ describe('lesson status', () => {
     expect(lessonStatus(getPath(after), 'saudacoes')).toBe('completed');
     expect(lessonStatus(getPath(after), 'apresentacoes')).toBe('available');
     expect(recommendedLessonId(getPath(after))).toBe('apresentacoes');
+  });
+});
+
+describe('bonuses', () => {
+  it('perfect lesson and combo add to the first completion only', () => {
+    const a = applyCompletion(initialState(), { ...done('a1', '2026-01-01'), correct: 8, bestCombo: 8 });
+    expect(a.breakdown).toMatchObject({ answers: 16, completion: XP_COMPLETION_BONUS, perfect: XP_PERFECT_BONUS, combo: comboBonus(8) });
+    expect(a.xpGained).toBe(16 + XP_COMPLETION_BONUS + XP_PERFECT_BONUS + comboBonus(8));
+    const b = applyCompletion(a.state, { ...done('a2', '2026-01-01'), correct: 8, bestCombo: 8 });
+    expect(b.xpGained).toBe(XP_REPLAY);
+    expect(b.breakdown.perfect).toBe(0);
+  });
+  it('combo tiers', () => {
+    expect([0, 2, 3, 4, 5, 9].map(comboBonus)).toEqual([0, 0, 2, 2, 4, 4]);
+  });
+});
+
+describe('daily goal', () => {
+  it('accumulates per day across completions and flags the moment the goal is reached', () => {
+    const s0 = initialState(); // goal 20
+    const a = applyCompletion(s0, done('a1', '2026-01-01', 'saudacoes', 3)); // 6+10 = 16
+    expect(a.goalReachedNow).toBe(false);
+    expect(dailyProgress(a.state, '2026-01-01')).toEqual({ xp: 16, goal: 20, reached: false });
+    const b = applyCompletion(a.state, done('a2', '2026-01-01')); // replay +5 -> 21
+    expect(b.goalReachedNow).toBe(true);
+    expect(b.newAchievements).toContain('daily-goal');
+    const c = applyCompletion(b.state, done('a3', '2026-01-01'));
+    expect(c.goalReachedNow).toBe(false);
+  });
+  it('resets on a new day', () => {
+    const a = applyCompletion(initialState(), done('a1', '2026-01-01')).state;
+    expect(dailyProgress(a, '2026-01-02').xp).toBe(0);
+    const b = applyCompletion(a, done('a2', '2026-01-02'));
+    expect(b.state.daily).toEqual({ day: '2026-01-02', xp: XP_REPLAY });
   });
 });

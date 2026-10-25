@@ -26,7 +26,7 @@ Dicas culturais: aprender árabe → Fadia (Egito); aprender português → Clau
 
 ## Escopo desta versão (MVP — fluxo vertical)
 
-Incluído e funcionando: onboarding, escolha de idiomas, Home (XP, nível, sequência, lição recomendada, trilhas), lista de lições com estados bloqueada/disponível/concluída, lição completa (múltipla escolha + montagem de frase, feedback imediato, dica cultural, resultado com XP), conquistas básicas, perfil, persistência local, conteúdo em arquivos de dados, testes.
+Incluído e funcionando: onboarding, escolha de idiomas, Home (Nur (pontos), nível, sequência, meta diária, lição recomendada, trilhas), lista de lições com estados bloqueada/disponível/concluída, lição completa (múltipla escolha + montagem de frase, feedback imediato, dica cultural, resultado com XP), conquistas básicas, perfil, persistência local, conteúdo em arquivos de dados, testes.
 
 Fora do escopo (não simulado): login, nuvem, pagamentos, IA generativa, áudio/pronúncia, social, ranking, push.
 
@@ -53,3 +53,7 @@ Fora do escopo (não simulado): login, nuvem, pagamentos, IA generativa, áudio/
 3. **Persistência**: `localStorage` é simples, porém pode ser limpo pelo sistema/navegador; em Capacitor considerar `@capacitor/preferences`.
 4. **Android**: não testado em dispositivo; Capacitor planejado (ver README).
 5. **Assets dos personagens**: dependem de arquivos finais do fundador.
+
+## Pontos (Nur) e meta diária
+
+Os pontos se chamam **Nur** (نور, "luz"), para ter identidade própria. Regras e números em `README.md`. Meta diária e bônus (lição perfeita e combo) existem; ligas, vidas e ranking continuam fora do escopo.

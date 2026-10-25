@@ -241,3 +241,15 @@ button.card { cursor: pointer; }
   .hero-bust { height: 170px; }
 }
 .tabbar { z-index: 20; }
+
+/* Daily goal + reward breakdown */
+.goal-card { flex-direction: column; align-items: stretch; gap: 8px; }
+.goal-card .grow { display: flex; flex-direction: column; gap: 6px; }
+.goal-card .bar { height: 12px; }
+.breakdown { display: flex; flex-direction: column; gap: 6px; background: rgb(255 255 255 / 0.08); border: 2px solid rgb(224 184 76 / 0.4); border-radius: 16px; padding: 10px 14px; }
+.breakdown li { display: flex; justify-content: space-between; gap: 12px; }
+.breakdown strong { color: var(--gold); }
+.row-seg { flex-direction: row; }
+.row-seg button { flex: 1; text-align: center; }
+.result-bg .goal-card { background: rgb(255 255 255 / 0.1); border-color: rgb(224 184 76 / 0.55); color: #fff; }
+.result-bg .goal-card .bar { background: rgb(255 255 255 / 0.2); }

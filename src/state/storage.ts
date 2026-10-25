@@ -1,5 +1,5 @@
 import { initialState } from '../domain/progress';
-import { LANGS, otherLang } from '../domain/types';
+import { DAILY_GOALS, LANGS, otherLang } from '../domain/types';
 import type { AppState } from '../domain/types';
 
 export const STORAGE_KEY = 'ashra.state.v1';
@@ -21,6 +21,8 @@ export function loadState(): AppState {
       target,
       paths: typeof data.paths === 'object' && data.paths ? data.paths : {},
       streak: data.streak ?? base.streak,
+      dailyGoal: DAILY_GOALS.includes(data.dailyGoal as never) ? data.dailyGoal! : base.dailyGoal,
+      daily: data.daily && typeof data.daily.xp === 'number' ? data.daily : base.daily,
       achievements: Array.isArray(data.achievements) ? data.achievements : [],
       processedAttempts: Array.isArray(data.processedAttempts) ? data.processedAttempts : [],
     };

@@ -5,6 +5,7 @@ import App from './App';
 import { AppProvider } from './state/AppContext';
 import { lessons } from './content/lessons';
 import { loadState } from './state/storage';
+import { XP_COMPLETION_BONUS, XP_PERFECT_BONUS, XP_PER_CORRECT, comboBonus } from './domain/progress';
 
 const mount = () => render(<AppProvider><App /></AppProvider>);
 
@@ -58,18 +59,23 @@ describe('first vertical flow (pt → ar)', () => {
     await user.click(screen.getByRole('button', { name: /continuar/i }));
     expect(screen.getByRole('heading', { name: /mandou bem/i })).toBeInTheDocument();
     const total = lessons[0].phrases.length + 2;
-    expect(screen.getByTestId('xp-gained')).toHaveTextContent(`+${total * 2 + 10}`);
+    const perfectXp = total * XP_PER_CORRECT + XP_COMPLETION_BONUS + XP_PERFECT_BONUS + comboBonus(total);
+    expect(screen.getByTestId('xp-gained')).toHaveTextContent(`+${perfectXp}`);
+    expect(screen.getByText(/lição perfeita/i, { selector: 'span' })).toBeInTheDocument();
+    expect(screen.getByText(/você bateu a meta de hoje/i)).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: /continuar/i }));
 
     // Back on Home: recommended lesson advanced, XP visible.
     expect(screen.getByText(/apresentações/i, { selector: 'strong' })).toBeInTheDocument();
     const saved = loadState();
-    expect(saved.paths['pt-BR>ar-EG'].xp).toBe(total * 2 + 10);
+    expect(saved.paths['pt-BR>ar-EG'].xp).toBe(perfectXp);
+    expect(saved.daily.xp).toBe(perfectXp);
 
     unmount();
     mount();
     expect(screen.getByRole('heading', { name: 'Olá, Rafa!' })).toBeInTheDocument();
-    expect(loadState().paths['pt-BR>ar-EG'].xp).toBe(total * 2 + 10);
+    expect(loadState().paths['pt-BR>ar-EG'].xp).toBe(perfectXp);
+    expect(screen.getByText(/meta cumprida/i)).toBeInTheDocument();
   });
 
   it('gives less XP for wrong answers (feedback shows the correct answer)', async () => {
@@ -80,7 +86,9 @@ describe('first vertical flow (pt → ar)', () => {
     await playLesson(user, 'pt', 1);
     await user.click(screen.getByRole('button', { name: /continuar/i }));
     const total = lessons[0].phrases.length + 2;
-    expect(screen.getByTestId('xp-gained')).toHaveTextContent(`+${(total - 1) * 2 + 10}`);
+    // One miss on the first exercise: no perfect bonus, but a 7-answer combo.
+    expect(screen.getByTestId('xp-gained')).toHaveTextContent(`+${(total - 1) * XP_PER_CORRECT + XP_COMPLETION_BONUS + comboBonus(total - 1)}`);
+    expect(screen.queryByText(/lição perfeita/i, { selector: 'span' })).not.toBeInTheDocument();
   });
 });
 
@@ -101,5 +109,17 @@ describe('reverse direction (ar → pt) uses real RTL', () => {
     await playLesson(user, 'ar');
     expect(screen.getByRole('heading', { name: /معلومة ثقافية/ })).toBeInTheDocument();
     // Portuguese options inside the Arabic UI keep their own LTR direction.
+  });
+});
+
+describe('daily goal', () => {
+  it('can be changed in the profile and persists', async () => {
+    const user = userEvent.setup();
+    mount();
+    await onboard(user, 'pt');
+    expect(screen.getByText(/0\/20 nur/i)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: /perfil/i }));
+    await user.click(screen.getByRole('button', { name: /30 nur/i }));
+    expect(loadState().dailyGoal).toBe(30);
   });
 });

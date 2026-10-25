@@ -1,6 +1,6 @@
 import { lessonById, tracks } from '../content/lessons';
 import { allLessonIds } from '../content/lessons';
-import { currentStreak, dayKey, levelInfo, lessonStatus, recommendedLessonId } from '../domain/progress';
+import { currentStreak, dailyProgress, dayKey, levelInfo, lessonStatus, recommendedLessonId } from '../domain/progress';
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { StorageWarning } from '../ui/Chrome';
@@ -19,7 +19,9 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
   const lv = levelInfo(path.xp);
   const rec = recommendedLessonId(path);
   const lesson = rec ? lessonById(rec) : undefined;
-  const streak = currentStreak(state, dayKey(new Date()));
+  const today = dayKey(new Date());
+  const streak = currentStreak(state, today);
+  const daily = dailyProgress(state, today);
   const name = state.name || s.defaultName;
   const ids = allLessonIds();
 
@@ -61,6 +63,17 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
         <Stat tone="violet" icon="level" value={String(lv.level)} label={s.level} />
         <Stat tone="amber" icon="achievements" value={String(state.achievements.length)} label={s.achievements} />
         <Stat tone="red" icon="streak" value={String(streak)} label={s.streak} />
+      </section>
+
+      <section className="card goal-card" aria-label={s.dailyGoal}>
+        <span className="grow">
+          <span className="row between">
+            <strong>{s.dailyGoal}</strong>
+            <span className="muted small">{Math.min(daily.xp, daily.goal)}/{daily.goal} {s.xp}</span>
+          </span>
+          <progress className="bar" max={daily.goal} value={Math.min(daily.xp, daily.goal)} aria-label={s.dailyGoal} />
+          <span className="muted small">{daily.reached ? `✓ ${s.dailyGoalReached}` : s.dailyGoalLeft(daily.goal - daily.xp)}</span>
+        </span>
       </section>
 
       <h2>{s.tracks}</h2>

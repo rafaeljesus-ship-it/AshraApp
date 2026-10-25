@@ -1,12 +1,12 @@
 import { characters } from '../content/characters';
 import { currentStreak, dayKey, getPath, levelInfo } from '../domain/progress';
-import { LANGS, otherLang } from '../domain/types';
+import { DAILY_GOALS, LANGS, otherLang } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { Page } from '../ui/Chrome';
 import { Avatar } from '../ui/Avatar';
 
 export function Profile() {
-  const { state, s, path, switchPath, reset } = useApp();
+  const { state, s, path, switchPath, reset, setDailyGoal } = useApp();
   const lv = levelInfo(path.xp);
   const streak = currentStreak(state, dayKey(new Date()));
   const done = Object.keys(path.completed).length;
@@ -32,6 +32,19 @@ export function Profile() {
         <div className="stat"><strong>{state.achievements.length}</strong><span className="muted small">{s.achievements}</span></div>
         <div className="stat"><strong>{streak}</strong><span className="muted small">{s.days}</span></div>
       </div>
+
+      <section className="stack">
+        <h2>{s.dailyGoal}</h2>
+        <p className="muted small">{s.dailyGoalHint}</p>
+        <div className="seg row-seg" role="group" aria-label={s.dailyGoal}>
+          {DAILY_GOALS.map((g) => (
+            <button key={g} className={state.dailyGoal === g ? 'active' : ''} aria-pressed={state.dailyGoal === g} onClick={() => setDailyGoal(g)}>
+              <strong className="block">{s.goalOption(g)}</strong>
+              <span className="muted small">{s.goalLabel[g]}</span>
+            </button>
+          ))}
+        </div>
+      </section>
 
       <section className="stack">
         <h2>{s.pathLabel}</h2>

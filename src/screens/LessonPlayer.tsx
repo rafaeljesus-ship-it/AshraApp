@@ -22,6 +22,8 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
 
   const [index, setIndex] = useState(0);
   const [correctCount, setCorrectCount] = useState(0);
+  const [run, setRun] = useState(0);
+  const [bestCombo, setBestCombo] = useState(0);
   const [phase, setPhase] = useState<Phase>('exercise');
   const [result, setResult] = useState<CompletionResult | null>(null);
 
@@ -39,6 +41,9 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
   const onAnswered = (ok: boolean) => {
     const total = correctCount + (ok ? 1 : 0);
     if (ok) setCorrectCount(total);
+    const nextRun = ok ? run + 1 : 0;
+    setRun(nextRun);
+    setBestCombo(Math.max(bestCombo, nextRun));
     if (index + 1 < exercises.length) setIndex(index + 1);
     else setPhase('tip');
   };
@@ -61,6 +66,7 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
               lessonId,
               correct: correctCount,
               total: exercises.length,
+              bestCombo,
               today: dayKey(new Date()),
             }));
             setPhase('result');
@@ -87,7 +93,25 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
           <div className="stat"><strong>{correctCount}/{exercises.length}</strong><span className="muted small">{s.resultAccuracy}</span></div>
           <div className="stat"><strong>{result.streakCount}</strong><span className="muted small">{s.resultStreak}</span></div>
         </div>
-        {result.xpGained <= 5 && <p className="muted small">{s.replayNote}</p>}
+        <ul className="breakdown" aria-label={s.resultXp}>
+          {([
+            [s.bonusAnswers, result.breakdown.answers],
+            [s.bonusCompletion, result.breakdown.completion],
+            [s.bonusPerfect, result.breakdown.perfect],
+            [s.bonusCombo(bestCombo), result.breakdown.combo],
+            [s.bonusReplay, result.breakdown.replay],
+          ] as [string, number][]).filter(([, n]) => n > 0).map(([label, n]) => (
+            <li key={label}><span>{label}</span><strong>+{n}</strong></li>
+          ))}
+        </ul>
+        <div className="card goal-card" role="status">
+          <span className="grow">
+            <strong className="block">{result.goalReachedNow ? s.goalReachedToday : s.dailyGoal}</strong>
+            <progress className="bar" max={result.daily.goal} value={Math.min(result.daily.xp, result.daily.goal)} aria-label={s.dailyGoal} />
+            <span className="muted small">{Math.min(result.daily.xp, result.daily.goal)}/{result.daily.goal} {s.xp}</span>
+          </span>
+        </div>
+        {result.breakdown.replay > 0 && <p className="muted small">{s.replayNote}</p>}
         {earned.map((a) => (
           <div key={a.id} className="card achievement earned" role="status">
             <span className="badge" aria-hidden="true">{a.icon}</span>

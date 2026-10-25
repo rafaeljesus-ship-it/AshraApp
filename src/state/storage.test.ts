@@ -12,6 +12,12 @@ describe('storage', () => {
     localStorage.setItem(STORAGE_KEY, '{not json');
     expect(loadState()).toEqual(initialState());
   });
+  it('migrates saved data without a daily goal and rejects invalid goals', () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, onboarded: true, dailyGoal: 999 }));
+    const s = loadState();
+    expect(s.dailyGoal).toBe(20);
+    expect(s.daily).toEqual({ day: null, xp: 0 });
+  });
   it('rejects unknown versions and equal native/target languages', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 99 }));
     expect(loadState().onboarded).toBe(false);

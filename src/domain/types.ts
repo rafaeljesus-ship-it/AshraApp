@@ -94,9 +94,16 @@ export interface AppState {
   /** key = `${native}>${target}` */
   paths: Record<string, PathProgress>;
   streak: { count: number; lastDay: string | null };
+  /** Daily goal in Nur (the app's points). One of DAILY_GOALS. */
+  dailyGoal: number;
+  /** Nur earned on `day` (local date) across all paths; resets when the day changes. */
+  daily: { day: string | null; xp: number };
   achievements: string[];
   /** Attempt ids already rewarded (capped) so XP is granted once per completion. */
   processedAttempts: string[];
 }
+
+export const DAILY_GOALS = [10, 20, 30] as const;
+export const DEFAULT_DAILY_GOAL = 20;
 
 export const pathKey = (native: Lang, target: Lang) => `${native}>${target}`;

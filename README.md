@@ -50,7 +50,9 @@ Para adicionar conteúdo: edite `src/content/lessons.ts`. Cada frase é escrita 
 - **React + TypeScript + Vite**, sem roteador nem biblioteca de estado: poucas telas, estado em um reducer simples. Dependências de runtime: `react`, `react-dom` e `@fontsource/noto-sans-arabic` (fonte árabe empacotada para funcionar offline e com shaping correto).
 - **RTL real**: `lang`/`dir` no `<html>` conforme o idioma nativo, CSS com propriedades lógicas (`inline-start`, `inset-inline`…), setas espelhadas, e `Txt` marca trechos em outra língua com seu próprio `dir`.
 - **Progresso por caminho** (`pt-BR>ar-EG` e `ar-EG>pt-BR` guardam XP e lições separadamente); sequência diária é global.
-- **XP uma vez por conclusão**: cada tentativa tem um `attemptId`; o reducer ignora ids já processados. Primeira conclusão = 2 XP por acerto de primeira + 10 de bônus; repetição = 5 XP fixos (evita farmar XP).
+- **Pontos = "Nur"** (luz, em árabe; nome próprio da ASHRA, não "XP"). Nomes técnicos no código continuam `xp`; só os textos em `src/content/i18n.ts` e os títulos de conquistas usam "Nur" / "نور", fáceis de trocar.
+- **Nur uma vez por conclusão**: cada tentativa tem um `attemptId`; o reducer ignora ids já processados. Primeira conclusão = 2 por acerto de primeira + 10 de conclusão + **5 se a lição for perfeita** + **combo** (maior sequência de acertos seguidos: 3–4 → +2; 5 ou mais → +4). Repetição = 5 fixos, sem bônus (evita farmar).
+- **Meta diária**: 10, 20 (padrão) ou 30 Nur por dia, escolhida no Perfil; soma todas as conclusões do dia (todos os caminhos) e zera na virada do dia local. A Home mostra a barra; a tela de resultado mostra o detalhamento do bônus e avisa quando a meta é batida (conquista "Meta do dia").
 - **Níveis**: nível *n* começa em `50·n·(n−1)` XP (100, 300, 600…), como na referência (320/600 XP no nível 3).
 
 ## Android (Fase 4, ainda não feita)

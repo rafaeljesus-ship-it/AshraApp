@@ -17,6 +17,7 @@ interface AppApi {
   setTarget: (lang: Lang) => void;
   finishOnboarding: (name: string) => void;
   switchPath: (native: Lang, target: Lang) => void;
+  setDailyGoal: (goal: number) => void;
   completeLesson: (input: CompletionInput) => CompletionResult;
   reset: () => void;
 }
@@ -53,6 +54,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setTarget: (target) => commit({ ...ref.current, target }),
       finishOnboarding: (name) => commit({ ...ref.current, name: name.trim(), onboarded: true }),
       switchPath: (native, target) => commit({ ...ref.current, native, target }),
+      setDailyGoal: (dailyGoal) => commit({ ...ref.current, dailyGoal }),
       completeLesson: (input) => {
         const result = applyCompletion(ref.current, input);
         if (!result.duplicate) commit(result.state);
