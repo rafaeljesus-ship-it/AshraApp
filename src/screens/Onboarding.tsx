@@ -4,8 +4,7 @@ import type { Lang } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { Logo } from '../ui/Logo';
 import { Txt } from '../ui/Txt';
-import { Avatar } from '../ui/Avatar';
-import { Scene } from '../ui/Scene';
+import { langScene, nourPose } from '../ui/art';
 
 type Step = 'welcome' | 'native' | 'target' | 'name';
 
@@ -27,11 +26,11 @@ export function Onboarding() {
 
       {step === 'welcome' && (
         <section className="center stack welcome">
-          <div className="hero"><Scene name="egypt" className="hero-scene" /></div>
+          <div className="hero"><img className="hero-scene" src={langScene['ar-EG']} alt="" /></div>
           <Logo size={96} />
           <h1 className="brand">ASHRA</h1>
           <p className="tagline">{s.tagline}</p>
-          <Avatar id="nour" size={96} />
+          <img className="nour-pose" src={nourPose('wave')} alt="Nour" />
           <button className="btn primary" onClick={() => setStep('native')}>{s.start}</button>
         </section>
       )}
@@ -103,7 +102,7 @@ function LangCard({ lang, selected, label, sub, onPick }: {
 }) {
   return (
     <button className={`card choice-card ${selected ? 'selected' : ''}`} onClick={onPick} data-lang={lang}>
-      <span className="thumb wide"><Scene name={lang === 'ar-EG' ? 'egypt' : 'brazil'} /></span>
+      <span className="thumb wide"><img src={langScene[lang]} alt="" /></span>
       <span className="grow">
         <strong>{label}</strong>
         {sub && <span className="muted block">{sub}</span>}

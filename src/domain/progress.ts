@@ -93,11 +93,11 @@ const totalCompleted = (s: AppState) =>
 const totalXp = (s: AppState) => Object.values(s.paths).reduce((n, p) => n + p.xp, 0);
 
 export const achievementDefs: AchievementDef[] = [
-  { id: 'first-lesson', icon: '🌟', title: { 'pt-BR': 'Primeira lição', 'ar-EG': 'أول درس' }, test: (s) => totalCompleted(s) >= 1 },
-  { id: 'perfect', icon: '🎯', title: { 'pt-BR': 'Lição perfeita', 'ar-EG': 'درس بلا أخطاء' }, test: (_s, c) => c.perfect },
-  { id: 'streak-3', icon: '🔥', title: { 'pt-BR': '3 dias seguidos', 'ar-EG': '٣ أيام متتالية' }, test: (s) => s.streak.count >= 3 },
-  { id: 'xp-100', icon: '⭐', title: { 'pt-BR': '100 Nur', 'ar-EG': '١٠٠ نور' }, test: (s) => totalXp(s) >= 100 },
-  { id: 'daily-goal', icon: '🎯', title: { 'pt-BR': 'Meta do dia', 'ar-EG': 'هدف اليوم' }, test: (_s, c) => c.goalReached },
+  { id: 'first-lesson', icon: 'book', title: { 'pt-BR': 'Primeira lição', 'ar-EG': 'أول درس' }, test: (s) => totalCompleted(s) >= 1 },
+  { id: 'perfect', icon: 'star', title: { 'pt-BR': 'Lição perfeita', 'ar-EG': 'درس بلا أخطاء' }, test: (_s, c) => c.perfect },
+  { id: 'streak-3', icon: 'flame', title: { 'pt-BR': '3 dias seguidos', 'ar-EG': '٣ أيام متتالية' }, test: (s) => s.streak.count >= 3 },
+  { id: 'xp-100', icon: 'trophy', title: { 'pt-BR': '100 Nur', 'ar-EG': '١٠٠ نور' }, test: (s) => totalXp(s) >= 100 },
+  { id: 'daily-goal', icon: 'compass', title: { 'pt-BR': 'Meta do dia', 'ar-EG': 'هدف اليوم' }, test: (_s, c) => c.goalReached },
 ];
 
 export interface CompletionInput {

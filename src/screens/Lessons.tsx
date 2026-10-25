@@ -2,10 +2,7 @@ import { lessonById, tracks } from '../content/lessons';
 import { lessonStatus } from '../domain/progress';
 import { useApp } from '../state/AppContext';
 import { Page } from '../ui/Chrome';
-import { Scene } from '../ui/Scene';
-import type { SceneName } from '../ui/Scene';
-
-const trackScene: Record<string, SceneName> = { basico: 'egypt', conversas: 'brazil', cultura: 'nile' };
+import { trackScene } from '../ui/art';
 
 export function Lessons({ onOpenLesson }: { onOpenLesson: (id: string) => void }) {
   const { state, s, path } = useApp();
@@ -16,12 +13,12 @@ export function Lessons({ onOpenLesson }: { onOpenLesson: (id: string) => void }
           <h2>{tr.title[state.native]}</h2>
           {tr.comingSoon ? (
             <div className="trail-map soon" role="status">
-              <Scene name={trackScene[tr.id] ?? 'egypt'} className="map-scene" />
+              <img src={trackScene[tr.id]} alt="" className="map-scene" />
               <span className="pill">🔒 {s.comingSoon}</span>
             </div>
           ) : (
             <div className="trail-map">
-            <Scene name={trackScene[tr.id] ?? 'egypt'} className="map-scene" />
+            <img src={trackScene[tr.id]} alt="" className="map-scene" />
             <ol className="trail">
               {tr.lessonIds.map((id, i) => {
                 const lesson = lessonById(id)!;

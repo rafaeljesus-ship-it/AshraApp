@@ -91,3 +91,18 @@ Todos os arquivos do pacote têm **no máximo 200–240 px** (miniaturas): serve
 **Não integrados:** `avatar-usuario-placeholder.png` (é o rosto do Rafa, não um avatar neutro do usuário), Claudia (`claudia.png` tem fundo rosa e estilo/figurino diferentes do resto; mantido o recorte anterior), pranchas de expressões (rostos de ~45 px), `banners-paisagem` (198×100, menores que os atuais), vinhetas 02/04, cartões de onboarding, `fundos-decorativos`, `nav-bar-fundo-pill.png`, `thumbnail-licao-recomendada.png` e `07-icones-ui/*` (já existentes em resolução menor ou com texto embutido). Falta ícone de **Explorar** na barra (não há aba ainda).
 
 A barra inferior agora mostra o item ativo com fundo verde-claro (os ícones coloridos não têm contraste sobre verde-esmeralda).
+
+## Integração dos pacotes `ASHRA_assets_parte_1` e `parte_2` (v4)
+
+Os arquivos vieram com nomes automáticos do gerador; abaixo, o que são e como foram usados. Estes são **de alta resolução e com transparência real** (exceto as telas).
+
+| Conteúdo | Uso no app |
+|---|---|
+| 6 poses do **Nour** (alpha real): pulando, acenando, pensando, apontando, rindo, deitado | `public/characters/nour/{cheer,wave,think,point,joy,rest}.png`. `cheer` na tela de recompensa, `wave` nas boas-vindas. As outras ficam prontas para estados vazios, erro e dicas. |
+| Grade de **6 cenários** (pirâmides, Nilo, bazar, café ao pôr do sol, praia, Pão de Açúcar) | `public/assets/scenes/*.jpg` (551×~455). Usados no banner/miniatura da Home, boas-vindas, cards de idioma e mapa de lições (substituem os SVGs; `Scene.tsx` removido). Mapeamento em `src/ui/art.ts`. |
+| **Ícones dourados** (livro, balão, bússola, chama, globo, coração, estrela, troféu) | `public/assets/gold/*.png` (256 px). Usados nas **conquistas** (lista e tela de resultado) no lugar dos emojis. |
+| 11 **telas completas** de referência | `docs/reference/telas/*.jpg` (reduzidas). São mockups com texto embutido: **alvo de design**, não assets. |
+
+**Guardados, ainda não usados:** 8 ícones de linha de áudio (alto-falante, ondas, replay, microfone, onda sonora, fone, teclado, mudo) — úteis quando houver áudio; placas em branco (botão verde, faixa com estrela, placa creme, placa menta, barra de progresso com moldura) — úteis como fundos de botões/cards, mas a barra com preenchimento fixo e a placa de alerta (xadrez falso gravado na imagem) **não** servem como estão.
+
+**Pendências de arte:** Claudia (retrato no estilo dos demais), avatar neutro do usuário, ícone de Explorar e ícone de cadeado ilustrado.

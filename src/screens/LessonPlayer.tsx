@@ -8,6 +8,7 @@ import type { BuildExercise, ChoiceExercise } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { Txt } from '../ui/Txt';
+import { goldIcon, nourPose } from '../ui/art';
 
 type Phase = 'exercise' | 'tip' | 'result';
 
@@ -86,7 +87,7 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
         <div className="center stack">
           <div className="stars" aria-hidden="true"><span>⭐</span><span className="big">⭐</span><span>⭐</span></div>
           <h1>{s.resultTitle}</h1>
-          <Avatar id="nour" size={96} />
+          <img className="nour-pose big" src={nourPose('cheer')} alt="Nour" />
         </div>
         <div className="stats">
           <div className="stat"><strong data-testid="xp-gained">+{result.xpGained}</strong><span className="muted small">{s.resultXp}</span></div>
@@ -114,7 +115,7 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
         {result.breakdown.replay > 0 && <p className="muted small">{s.replayNote}</p>}
         {earned.map((a) => (
           <div key={a.id} className="card achievement earned" role="status">
-            <span className="badge" aria-hidden="true">{a.icon}</span>
+            <span className="badge" aria-hidden="true"><img src={goldIcon(a.icon as never)} alt="" /></span>
             <span><span className="eyebrow">{s.newAchievement}</span><strong className="block">{a.title[state.native]}</strong></span>
           </div>
         ))}

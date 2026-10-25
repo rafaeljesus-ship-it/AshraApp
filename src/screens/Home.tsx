@@ -4,13 +4,10 @@ import { currentStreak, dailyProgress, dayKey, levelInfo, lessonStatus, recommen
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { StorageWarning } from '../ui/Chrome';
+import { trackScene } from '../ui/art';
 
 // Illustrated art from the refined asset pack (see DESIGN.md "Asset integration").
-const trackArt: Record<string, string> = {
-  basico: '/assets/scenes/egypt_pyramids.png',
-  conversas: '/assets/scenes/egypt_cafe.png',
-  cultura: '/assets/scenes/rio_christ.png',
-};
+const trackArt = trackScene;
 // Scene vignettes (with characters) for the track cards.
 const trackCard: Record<string, string> = {
   basico: '/assets/vignettes/basico.png',
