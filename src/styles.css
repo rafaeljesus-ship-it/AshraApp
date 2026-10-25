@@ -215,3 +215,4 @@ button.card { cursor: pointer; }
 .node-label { flex: 1; min-width: 0; }
 .trail-node { display: flex; gap: 12px; width: 100%; }
 .welcome { flex: 1; justify-content: flex-start; }
+.nowrap { white-space: nowrap; }

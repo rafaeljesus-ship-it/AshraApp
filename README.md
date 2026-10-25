@@ -60,7 +60,7 @@ Recomendação: **Capacitor** — empacota o build web (`dist/`) em app Android 
 ## Limitações conhecidas / premissas
 
 - **Conteúdo é demonstrativo** (2 lições, 11 frases) e precisa de revisão por falantes nativos dos dois idiomas. Transliteração é aproximada.
-- **Personagens**: os assets oficiais não estão disponíveis como arquivos individuais; o app usa avatares-placeholder (ver `DESIGN.md` para substituir).
+- **Personagens**: os avatares em `public/characters/` são recortes das pranchas oficiais (`docs/reference/pranchas/`), não assets finais com fundo transparente; troque-os pela arte de produção quando existir (ver `DESIGN.md`).
 - **Sem áudio e sem IA**: nada disso é simulado. Trilhas "Conversas reais" e "Cultura e viagens" aparecem como *Em breve*.
 - O texto de interface em árabe foi escrito de forma simples e também precisa de revisão.
 - Seleção de nível inicial foi omitida: com só duas lições ela não mudaria nada.

@@ -1,0 +1,14 @@
+ASHRA — PRANCHAS VISUAIS
+================================
+
+Este pacote reúne as pranchas de referência visual criadas para o projeto ASHRA.
+
+Conteúdo:
+- Jornada e telas de referência do aplicativo.
+- Elenco oficial: Rafa, Fadia, Ali, Mohamed, Claudia e Nour.
+- Pranchas de personagens, expressões, ícones de gamificação, cenários e cards de trilhas.
+- Mockups de telas e conceito visual gamificado.
+
+IMPORTANTE:
+As imagens são pranchas de referência visual, não assets individuais com fundo transparente prontos para produção.
+Para o app, os elementos devem ser exportados/recortados e revisados individualmente. Textos em imagens geradas são apenas ilustrativos; o texto real deve ser renderizado pelo aplicativo.

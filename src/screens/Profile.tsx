@@ -22,7 +22,7 @@ export function Profile() {
       </div>
 
       <div className="card">
-        <div className="row between"><strong>{s.level} {lv.level}</strong><span className="muted">{lv.into}/{lv.span} {s.xp}</span></div>
+        <div className="row between"><strong className="nowrap">{s.level} {lv.level}</strong><span className="muted">{lv.into}/{lv.span} {s.xp}</span></div>
         <progress className="bar" max={lv.span} value={lv.into} aria-label={s.xp} />
       </div>
 

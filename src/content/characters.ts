@@ -4,7 +4,7 @@ export interface Character {
   id: CharacterId;
   name: string;
   /** Country flag shown next to the name (emoji). */
-  flag: '🇧🇷' | '🇪🇬';
+  flag: '🇧🇷' | '🇪🇬' | '✨';
   color: string;
   /** Role description in the UI language. */
   role: Record<Lang, string>;
@@ -22,7 +22,7 @@ export const characters: Character[] = [
   { id: 'mohamed', name: 'Mohamed', flag: '🇪🇬', color: '#3b6fb6', glyph: 'M', role: { 'pt-BR': 'Guia de gramática: estrutura das frases e expressões, de forma simples e prática.', 'ar-EG': 'مرشد القواعد: بناء الجمل والتعبيرات بشكل بسيط وعملي.' } },
   { id: 'claudia', name: 'Claudia', flag: '🇧🇷', color: '#c0507a', glyph: 'C', role: { 'pt-BR': 'Guia do Brasil: cultura, expressões, música, gastronomia e costumes.', 'ar-EG': 'مرشدة البرازيل: الثقافة والتعبيرات والموسيقى والطعام والعادات.' } },
   { id: 'rafa', name: 'Rafa', flag: '🇧🇷', color: '#2f7d5b', glyph: 'R', role: { 'pt-BR': 'Brasileiro que está começando no árabe egípcio. Faz as mesmas perguntas que você.', 'ar-EG': 'برازيلي يبدأ تعلّم العربية المصرية. يسأل نفس أسئلتك.' } },
-  { id: 'nour', name: 'Nour', flag: '🇪🇬', color: '#e0b84c', glyph: '🐪', role: { 'pt-BR': 'Nosso camelo mascote. Comemora suas conquistas e te motiva sempre.', 'ar-EG': 'جملنا التميمة. يحتفل بإنجازاتك ويشجعك دائماً.' } },
+  { id: 'nour', name: 'Nour', flag: '✨', color: '#e0b84c', glyph: '🐪', role: { 'pt-BR': 'Nosso camelo mascote. Comemora suas conquistas e te motiva sempre.', 'ar-EG': 'جملنا التميمة. يحتفل بإنجازاتك ويشجعك دائماً.' } },
 ];
 
 export const characterById = (id: CharacterId) => characters.find((c) => c.id === id)!;

@@ -32,7 +32,7 @@ Fonte: Noto Sans Arabic (empacotada) para árabe, com fallback do sistema para l
 
 Traços visuais oficiais (não alterar): Rafa — dreads curtos; Ali — careca e barbudo; Claudia — cabelos curtos e encaracolados; Fadia — guia cultural egípcia; Mohamed — guia de gramática; Nour — camelo com detalhes verde-esmeralda e dourados.
 
-Os assets finais **não estão disponíveis como arquivos individuais**, então o app mostra avatares-placeholder (círculo colorido com inicial). **Para substituir:** coloque `public/characters/<id>.png` (ids: `rafa`, `ali`, `claudia`, `fadia`, `mohamed`, `nour`; PNG quadrado, ≥ 256 px, fundo transparente ou liso). O componente `Avatar` usa o arquivo automaticamente e cai no placeholder se ele não existir. Os cenários atuais são SVGs simples e originais (`src/ui/Scene.tsx`), sem personagens.
+As pranchas oficiais (`docs/reference/pranchas/`, ver `LEIA-ME.txt`) **não são assets individuais de produção**. Como solução provisória, os rostos dos 6 personagens foram **recortados e redimensionados (256 px, quadrado)** da prancha 05 para `public/characters/<id>.png`; ficam com fundo da cena, sem transparência. Se um arquivo faltar, o app cai no avatar-placeholder (círculo colorido com inicial). **Para substituir por arte final:** sobrescreva `public/characters/<id>.png` (ids: `rafa`, `ali`, `claudia`, `fadia`, `mohamed`, `nour`; PNG quadrado, ≥ 256 px, fundo transparente ou liso). O componente `Avatar` usa o arquivo automaticamente e cai no placeholder se ele não existir. Os cenários atuais são SVGs simples e originais (`src/ui/Scene.tsx`), sem personagens.
 
 ## Próximos passos de design
 
