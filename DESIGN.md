@@ -51,3 +51,23 @@ Mapa de trilha ilustrado, tela de resultado com confete e Nour animado (leve), t
 - Tudo usa propriedades lógicas, então o RTL continua espelhado corretamente.
 
 **Não alterado:** avatares seguem como placeholders — não existem assets oficiais de personagens no repositório (`public/characters/` não existe) e nenhum foi inventado. Cenários da referência (pirâmides detalhadas, Cristo Redentor etc.) são apenas sugeridos por formas simples.
+
+## Integração dos assets refinados (Home)
+
+Origem: pacote `ASHRA_Assets_Refinados` (README_ASSETS.md / README_REFINAMENTO.md). Os recortes **não são uma biblioteca final**; só foi usado o que passou na inspeção visual.
+
+**Integrados (Home):**
+| Arquivo no app | Origem | Tratamento |
+|---|---|---|
+| `public/characters/bust/fadia.png`, `claudia.png` | `characters/*_character.png` (alpha real) | cortados acima da placa de nome; só o maior componente conectado do alpha; usados no banner da Home (guia da cultura aprendida: Fadia para árabe, Claudia para português) |
+| `public/characters/bust/ali.png`, `mohamed.png` | idem | preparados, ainda não usados |
+| `public/assets/scenes/egypt_pyramids.png`, `egypt_cafe.png`, `rio_christ.png` | `scenes/egypt_pyramids`, `egypt_city`, `rio_christ` | só a faixa superior (acima do cartão com legenda embutida), com margem para remover cantos arredondados/vizinhos; 250×100 px, `object-fit: cover` |
+| `public/assets/icons/xp.png`, `level.png`, `achievements.png`, `streak.png` | `gamification/*` | cortados sem a legenda e sem vizinhos; fundo creme embutido, exibidos em círculo |
+
+**Mantidos como estavam / não usados e por quê:**
+- `*_portrait_refined.png`: o fundo quadriculado faz parte da imagem (sem transparência real) — não usados.
+- `trail_cards/*`: legendas e botões embutidos — não usados.
+- `navigation/*`: legendas e pedaços vizinhos — a TabBar continua com emojis; **falta** um conjunto de ícones limpos (ou ícones vetoriais).
+- Bustos de Rafa e Nour: Rafa fica cortado na borda direita e Nour perde a boca ao cortar acima da placa; não foram gerados. Avatares circulares existentes (`public/characters/<id>.png`, recortes da prancha 05) continuam para esses dois.
+- Baixa resolução: cenários 250×100 e ícones ~72 px; ok em celular, ficam suaves em telas muito grandes. Para produção, pedir versões em alta resolução.
+- Mapa, Lições, Onboarding e Recompensa seguem com os cenários SVG até a próxima etapa.

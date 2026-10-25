@@ -1,14 +1,18 @@
 import { lessonById, tracks } from '../content/lessons';
 import { allLessonIds } from '../content/lessons';
-import { characterById } from '../content/characters';
 import { currentStreak, dayKey, levelInfo, lessonStatus, recommendedLessonId } from '../domain/progress';
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { StorageWarning } from '../ui/Chrome';
-import { Scene } from '../ui/Scene';
-import type { SceneName } from '../ui/Scene';
 
-const trackScene: Record<string, SceneName> = { basico: 'egypt', conversas: 'brazil', cultura: 'nile' };
+// Illustrated art from the refined asset pack (see DESIGN.md "Asset integration").
+const trackArt: Record<string, string> = {
+  basico: '/assets/scenes/egypt_pyramids.png',
+  conversas: '/assets/scenes/egypt_cafe.png',
+  cultura: '/assets/scenes/rio_christ.png',
+};
+/** Guide of the culture being learned: Fadia (Egypt) or Claudia (Brazil). */
+const guideBust = { 'ar-EG': 'fadia', 'pt-BR': 'claudia' } as const;
 
 export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: string) => void; onOpenLessons: () => void }) {
   const { state, s, path } = useApp();
@@ -22,20 +26,25 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
   return (
     <main className="screen with-tabs">
       <StorageWarning />
-      <header className="row greeting">
-        <Avatar id="nour" size={56} />
-        <div className="grow">
-          <h1>{s.hello(name)}</h1>
-          <p className="muted">{s.letsLearn} · {s.path(state.native, state.target)}</p>
+      <header className="hero-card">
+        <img className="hero-bg" src={trackArt.basico} alt="" />
+        <div className="hero-text">
+          <div className="row">
+            <Avatar id="nour" size={48} />
+            <h1>{s.hello(name)}</h1>
+          </div>
+          <p>{s.letsLearn}</p>
+          <span className="path-chip">{s.path(state.native, state.target)}</span>
+          <span className="streak-pill" aria-label={`${s.streak}: ${s.dayStreakShort(streak)}`}>
+            <img src="/assets/icons/streak.png" alt="" className="mini-icon" /> {s.dayStreakShort(streak)}
+          </span>
         </div>
-        <span className="streak-pill" aria-label={`${s.streak}: ${s.dayStreakShort(streak)}`}>
-          <span aria-hidden="true">🔥</span> {s.dayStreakShort(streak)}
-        </span>
+        <img className="hero-bust" src={`/characters/bust/${guideBust[state.target]}.png`} alt="" />
       </header>
 
       {lesson ? (
         <button className="card recommended" onClick={() => onOpenLesson(lesson.id)}>
-          <span className="thumb"><Scene name={trackScene[lesson.trackId] ?? 'egypt'} /></span>
+          <span className="thumb"><img src={trackArt[lesson.trackId] ?? trackArt.basico} alt="" /></span>
           <span className="grow">
             <span className="eyebrow">{s.recommended}</span>
             <strong className="block">{lesson.title[state.native]}</strong>
@@ -48,10 +57,10 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
       )}
 
       <section className="stats" aria-label={s.progressTitle}>
-        <Stat tone="gold" icon="⭐" value={String(path.xp)} label={s.xp} />
-        <Stat tone="violet" icon="🛡️" value={String(lv.level)} label={s.level} />
-        <Stat tone="amber" icon="🏆" value={String(state.achievements.length)} label={s.achievements} />
-        <Stat tone="red" icon="🔥" value={String(streak)} label={s.streak} />
+        <Stat tone="gold" icon="xp" value={String(path.xp)} label={s.xp} />
+        <Stat tone="violet" icon="level" value={String(lv.level)} label={s.level} />
+        <Stat tone="amber" icon="achievements" value={String(state.achievements.length)} label={s.achievements} />
+        <Stat tone="red" icon="streak" value={String(streak)} label={s.streak} />
       </section>
 
       <h2>{s.tracks}</h2>
@@ -61,7 +70,7 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
           return (
             <li key={tr.id}>
               <button className={`card track ${tr.color}`} onClick={onOpenLessons} disabled={tr.comingSoon} aria-disabled={tr.comingSoon}>
-                <Scene name={trackScene[tr.id] ?? 'egypt'} className="track-scene" />
+                <img src={trackArt[tr.id]} alt="" className="track-scene" />
                 <span className="grow track-text">
                   <strong className="block">{tr.title[state.native]}</strong>
                   <span>{tr.comingSoon ? s.comingSoon : `${done}/${tr.lessonIds.length} · ${tr.subtitle[state.native]}`}</span>
@@ -72,7 +81,6 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
           );
         })}
       </ul>
-      <p className="muted small">{characterById('nour').name} 🐪</p>
     </main>
   );
 }
@@ -80,7 +88,7 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
 function Stat({ icon, value, label, tone }: { icon: string; value: string; label: string; tone: string }) {
   return (
     <div className="stat">
-      <span className={`stat-icon ${tone}`} aria-hidden="true">{icon}</span>
+      <span className={`stat-icon ${tone}`} aria-hidden="true"><img src={`/assets/icons/${icon}.png`} alt="" /></span>
       <strong>{value}</strong>
       <span className="muted small">{label}</span>
     </div>
