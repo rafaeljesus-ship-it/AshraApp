@@ -106,3 +106,20 @@ Os arquivos vieram com nomes automáticos do gerador; abaixo, o que são e como 
 **Guardados, ainda não usados:** 8 ícones de linha de áudio (alto-falante, ondas, replay, microfone, onda sonora, fone, teclado, mudo) — úteis quando houver áudio; placas em branco (botão verde, faixa com estrela, placa creme, placa menta, barra de progresso com moldura) — úteis como fundos de botões/cards, mas a barra com preenchimento fixo e a placa de alerta (xadrez falso gravado na imagem) **não** servem como estão.
 
 **Pendências de arte:** Claudia (retrato no estilo dos demais), avatar neutro do usuário, ícone de Explorar e ícone de cadeado ilustrado.
+
+## Alinhamento com a jornada de referência (v5)
+
+Comparação tela a tela com `docs/reference/jornada_visual_ashra.jpeg` e `docs/reference/telas/`:
+
+| Tela | Antes | Agora |
+|---|---|---|
+| Abertura | cenário + mascote | arte do grupo (recorte provisório da própria prancha, 356×367 px) com marca e slogan renderizados pelo app |
+| Escolha de idioma | cards pequenos | cards grandes de cenário com legenda "Eu falo / Quero aprender", barra de etapas e Nour com balão "Dois mundos. Uma jornada incrível!" |
+| Conheça seus guias | só no Perfil | etapa do onboarding (lista com os 6 retratos) e também no Perfil |
+| Home | banner próprio com guia | cabeçalho como na referência (retrato do aprendiz — Rafa para quem aprende árabe, Ali para quem aprende português — saudação e chama com "N dias"), card da lição com cenário, números sob ícones coloridos, trilhas com cenário |
+| Lição | cabeçalho simples | rótulo "Lição N · Vocabulário/Frase completa" sobre a barra de progresso |
+| Dica cultural | cartão claro | tela imersiva: cenário escuro, balão de fala, guia grande (Fadia/Claudia) e cartão "Dica cultural" com "Legal! Continuar" |
+| Recompensa | Nour + números | guia + Nour, 3 cartões brancos (Nur, acertos, sequência), "Você já sabe dizer …", detalhe do bônus, meta diária, botão verde |
+| Trilha | lista em cartão | tela cheia com cenário, cabeçalho "Trilha: Básico" com progresso, nós ligados por linha pontilhada; 3 nós "Em breve" bloqueados (sem conteúdo ainda) |
+
+**Ainda diferente da referência (pendente):** introdução da lição com o guia grande + balão + microfone (exige áudio/fala), tela "Seu progresso" com semana de sequência, aba Explorar, sino de notificações, e a arte final do grupo em alta resolução (usar o prompt "Grupo — selfie dos seis").

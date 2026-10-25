@@ -11,6 +11,19 @@ export const scenes = {
 /** Scene for each language when shown as the learning target / native language. */
 export const langScene = { 'ar-EG': scenes.pyramids, 'pt-BR': scenes.rio } as const;
 
+/** Home track-card art (reference: palms/Nile, café, pyramids). */
+export const trackCard: Record<string, string> = {
+  basico: scenes.nile,
+  conversas: scenes.cafe,
+  cultura: scenes.pyramids,
+};
+
+/** Temporary group art cropped from the approved reference board (replace with a clean render). */
+export const groupSplash = '/assets/brand/group_splash.jpg';
+
+/** The learner character for each learning path: Rafa learns Arabic, Ali learns Portuguese. */
+export const learnerFor = (native: 'pt-BR' | 'ar-EG') => (native === 'pt-BR' ? 'rafa' : 'ali') as 'rafa' | 'ali';
+
 /** One scene per learning track. */
 export const trackScene: Record<string, string> = {
   basico: scenes.pyramids,

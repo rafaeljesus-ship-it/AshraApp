@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { characterById } from '../content/characters';
-import { lessonById } from '../content/lessons';
+import { allLessonIds, lessonById } from '../content/lessons';
 import { buildExercises, isBuildCorrect } from '../domain/exercises';
 import type { CompletionResult } from '../domain/progress';
 import { achievementDefs, dayKey } from '../domain/progress';
@@ -8,7 +8,7 @@ import type { BuildExercise, ChoiceExercise } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { Txt } from '../ui/Txt';
-import { goldIcon, nourPose } from '../ui/art';
+import { goldIcon, nourPose, scenes } from '../ui/art';
 
 type Phase = 'exercise' | 'tip' | 'result';
 
@@ -51,30 +51,36 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
 
   if (phase === 'tip') {
     const guide = characterById(lesson.tip.guide);
+    const hasBust = ['fadia', 'claudia', 'ali', 'mohamed'].includes(guide.id);
     return (
-      <main className="screen lesson">
-        <h1>{s.tipTitle}</h1>
-        <div className="card tip">
-          <div className="row"><Avatar id={guide.id} size={56} /><strong>{s.tipFrom(guide.name)} {guide.flag}</strong></div>
-          <p className="bubble">{lesson.tip.text[state.target]}</p>
+      <main className="screen lesson tip-screen">
+        <img className="tip-bg" src={state.target === 'ar-EG' ? scenes.cafe : scenes.beach} alt="" />
+        <p className="tip-top">{s.tipWith(guide.name)} <span aria-hidden="true">{guide.flag}</span></p>
+        <p className="speech">{lesson.tip.text[state.target]}</p>
+        {hasBust
+          ? <img className="tip-guide" src={`/characters/bust/${guide.id}.png`} alt={guide.name} />
+          : <Avatar id={guide.id} size={140} />}
+        <div className="card tip-card">
+          <h1>{s.tipTitle}</h1>
+          <p className="muted">{s.tipHint}</p>
+          <button
+            className="btn primary"
+            onClick={() => {
+              // Single call per attempt: the reducer also ignores a repeated attemptId.
+              setResult(completeLesson({
+                attemptId: attemptId.current,
+                lessonId,
+                correct: correctCount,
+                total: exercises.length,
+                bestCombo,
+                today: dayKey(new Date()),
+              }));
+              setPhase('result');
+            }}
+          >
+            {s.tipContinue} <span className="flip-rtl" aria-hidden="true">→</span>
+          </button>
         </div>
-        <button
-          className="btn primary"
-          onClick={() => {
-            // Single call per attempt: the reducer also ignores a repeated attemptId.
-            setResult(completeLesson({
-              attemptId: attemptId.current,
-              lessonId,
-              correct: correctCount,
-              total: exercises.length,
-              bestCombo,
-              today: dayKey(new Date()),
-            }));
-            setPhase('result');
-          }}
-        >
-          {s.next}
-        </button>
       </main>
     );
   }
@@ -87,13 +93,32 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
         <div className="center stack">
           <div className="stars" aria-hidden="true"><span>⭐</span><span className="big">⭐</span><span>⭐</span></div>
           <h1>{s.resultTitle}</h1>
-          <img className="nour-pose big" src={nourPose('cheer')} alt="Nour" />
+          <div className="result-art">
+            {['fadia', 'claudia'].includes(lesson.tip.guide) && (
+              <img className="result-guide" src={`/characters/bust/${lesson.tip.guide}.png`} alt="" />
+            )}
+            <img className="nour-pose big" src={nourPose('cheer')} alt="Nour" />
+          </div>
         </div>
-        <div className="stats">
-          <div className="stat"><strong data-testid="xp-gained">+{result.xpGained}</strong><span className="muted small">{s.resultXp}</span></div>
-          <div className="stat"><strong>{correctCount}/{exercises.length}</strong><span className="muted small">{s.resultAccuracy}</span></div>
-          <div className="stat"><strong>{result.streakCount}</strong><span className="muted small">{s.resultStreak}</span></div>
+        <div className="chips">
+          <div className="chip-card"><img src="/assets/icons/xp.png" alt="" /><strong data-testid="xp-gained">+{result.xpGained}</strong><span className="small">{s.resultXp}</span></div>
+          <div className="chip-card"><img src="/assets/gold/book.png" alt="" /><strong>{correctCount}/{exercises.length}</strong><span className="small">{s.resultAccuracy}</span></div>
+          <div className="chip-card"><img src="/assets/icons/streak.png" alt="" /><strong>{result.streakCount}</strong><span className="small">{s.resultStreak}</span></div>
         </div>
+        {(() => {
+          const ph = lesson.phrases[0];
+          const target = state.target === 'ar-EG' ? ph.ar : ph.pt;
+          return (
+            <div className="you-can-say" role="status">
+              <img src="/assets/gold/star.png" alt="" />
+              <span>
+                <span className="small block">{s.youCanSay}</span>
+                <Txt lang={state.target} className="say-text">{target}</Txt>
+                {state.target === 'ar-EG' && <span className="small block" dir="ltr">{ph.arTranslit}</span>}
+              </span>
+            </div>
+          );
+        })()}
         <ul className="breakdown" aria-label={s.resultXp}>
           {([
             [s.bonusAnswers, result.breakdown.answers],
@@ -119,7 +144,7 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
             <span><span className="eyebrow">{s.newAchievement}</span><strong className="block">{a.title[state.native]}</strong></span>
           </div>
         ))}
-        <button className="btn gold" onClick={onExit}>{s.continue}</button>
+        <button className="btn primary big" onClick={onExit}>{s.continue} <span className="flip-rtl" aria-hidden="true">→</span></button>
       </main>
       </div>
     );
@@ -128,11 +153,11 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
   const ex = exercises[index];
   return (
     <main className="screen lesson">
-      <header className="row lesson-head">
+      <header className="lesson-head">
         <button className="icon-btn" aria-label={s.exit} onClick={exit}>✕</button>
-        <progress className="bar grow" max={exercises.length} value={index} aria-label={s.lessonProgress(index + 1, exercises.length)} />
+        <p className="lesson-kind">{s.lessonN(allLessonIds().indexOf(lessonId) + 1)} · {ex.kind === 'choice' ? s.kindVocab : s.kindBuild}</p>
+        <progress className="bar" max={exercises.length} value={index} aria-label={s.lessonProgress(index + 1, exercises.length)} />
       </header>
-      <p className="muted small">{lesson.title[state.native]} · {s.lessonProgress(index + 1, exercises.length)}</p>
       {ex.kind === 'choice'
         ? <ChoiceView key={ex.id} ex={ex} onDone={onAnswered} />
         : <BuildView key={ex.id} ex={ex} onDone={onAnswered} />}

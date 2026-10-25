@@ -1,39 +1,50 @@
 import { useState } from 'react';
-import { LANGS, otherLang } from '../domain/types';
+import { characters } from '../content/characters';
+import { LANGS } from '../domain/types';
 import type { Lang } from '../domain/types';
 import { useApp } from '../state/AppContext';
+import { Avatar } from '../ui/Avatar';
 import { Logo } from '../ui/Logo';
 import { Txt } from '../ui/Txt';
-import { langScene, nourPose } from '../ui/art';
+import { groupSplash, langScene, nourPose } from '../ui/art';
 
-type Step = 'welcome' | 'native' | 'target' | 'name';
+type Step = 'welcome' | 'native' | 'target' | 'guides' | 'name';
+const STEPS: Step[] = ['welcome', 'native', 'target', 'guides', 'name'];
 
 export function Onboarding() {
   const { state, s, setNative, setTarget, finishOnboarding } = useApp();
   const [step, setStep] = useState<Step>('welcome');
   const [name, setName] = useState('');
   const targets = LANGS.filter((l) => l !== state.native);
+  const idx = STEPS.indexOf(step);
+  const back = () => setStep(STEPS[idx - 1]);
 
-  const backTo: Partial<Record<Step, Step>> = { native: 'welcome', target: 'native', name: 'target' };
+  if (step === 'welcome') {
+    return (
+      <main className="screen onboarding welcome-screen">
+        <div className="splash">
+          <img className="splash-art" src={groupSplash} alt="" />
+          <div className="splash-brand">
+            <Logo size={84} />
+            <h1 className="brand">ASHRA</h1>
+            <p className="tagline">{s.tagline}</p>
+          </div>
+        </div>
+        <button className="btn primary splash-cta" onClick={() => setStep('native')}>{s.start}</button>
+      </main>
+    );
+  }
 
   return (
     <main className="screen onboarding">
-      {backTo[step] && (
-        <button className="icon-btn back" aria-label={s.back} onClick={() => setStep(backTo[step]!)}>
+      <header className="ob-head">
+        <button className="icon-btn" aria-label={s.back} onClick={back}>
           <span className="flip-rtl" aria-hidden="true">←</span>
         </button>
-      )}
-
-      {step === 'welcome' && (
-        <section className="center stack welcome">
-          <div className="hero"><img className="hero-scene" src={langScene['ar-EG']} alt="" /></div>
-          <Logo size={96} />
-          <h1 className="brand">ASHRA</h1>
-          <p className="tagline">{s.tagline}</p>
-          <img className="nour-pose" src={nourPose('wave')} alt="Nour" />
-          <button className="btn primary" onClick={() => setStep('native')}>{s.start}</button>
-        </section>
-      )}
+        <div className="steps" aria-hidden="true">
+          {STEPS.slice(1).map((st) => <span key={st} className={st === step ? 'on' : STEPS.indexOf(st) < idx ? 'done' : ''} />)}
+        </div>
+      </header>
 
       {step === 'native' && (
         <section className="stack">
@@ -44,10 +55,12 @@ export function Onboarding() {
               key={l}
               lang={l}
               selected={state.native === l}
+              caption={s.iSpeakShort}
               label={<Txt lang={l}>{l === 'pt-BR' ? 'Português brasileiro' : 'العربية'}</Txt>}
               onPick={() => { setNative(l); setStep('target'); }}
             />
           ))}
+          <NourBubble text={s.twoWorlds} />
         </section>
       )}
 
@@ -60,20 +73,36 @@ export function Onboarding() {
               key={l}
               lang={l}
               selected={state.target === l}
-              label={s.wantToLearn(s.langName(l))}
-              sub={<Txt lang={l}>{l === 'ar-EG' ? 'مصر • اللهجة المصرية' : 'Brasil • Português'}</Txt>}
-              onPick={() => { setTarget(l); setStep('name'); }}
+              caption={s.wantToLearnCaption}
+              label={s.langName(l)}
+              onPick={() => { setTarget(l); setStep('guides'); }}
             />
           ))}
-          <p className="muted small">{s.path(state.native, otherLang(state.native))}</p>
+          <NourBubble text={s.twoWorlds} />
+        </section>
+      )}
+
+      {step === 'guides' && (
+        <section className="stack">
+          <h1 className="center-title">{s.guides}</h1>
+          <p className="muted center-title">{s.guidesHint}</p>
+          <ul className="guide-list">
+            {characters.map((c) => (
+              <li key={c.id} className="guide-row">
+                <Avatar id={c.id} size={64} />
+                <span className="grow">
+                  <strong>{c.name} <span aria-hidden="true">{c.flag}</span></strong>
+                  <span className="muted small block">{c.role[state.native]}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <button className="btn primary" onClick={() => setStep('name')}>{s.guidesContinue}</button>
         </section>
       )}
 
       {step === 'name' && (
-        <form
-          className="stack"
-          onSubmit={(e) => { e.preventDefault(); finishOnboarding(name); }}
-        >
+        <form className="stack" onSubmit={(e) => { e.preventDefault(); finishOnboarding(name); }}>
           <h1>{s.yourName}</h1>
           <p className="muted">{s.yourNameHint}</p>
           <label className="visually-hidden" htmlFor="name">{s.yourName}</label>
@@ -93,21 +122,32 @@ export function Onboarding() {
   );
 }
 
-function LangCard({ lang, selected, label, sub, onPick }: {
+function NourBubble({ text }: { text: string }) {
+  return (
+    <div className="nour-bubble" aria-hidden="true">
+      <img className="nour-pose small" src={nourPose('wave')} alt="" />
+      <span className="bubble">{text} ✨</span>
+    </div>
+  );
+}
+
+function LangCard({ lang, selected, caption, label, onPick }: {
   lang: Lang;
   selected: boolean;
+  caption: string;
   label: React.ReactNode;
-  sub?: React.ReactNode;
   onPick: () => void;
 }) {
   return (
-    <button className={`card choice-card ${selected ? 'selected' : ''}`} onClick={onPick} data-lang={lang}>
-      <span className="thumb wide"><img src={langScene[lang]} alt="" /></span>
-      <span className="grow">
-        <strong>{label}</strong>
-        {sub && <span className="muted block">{sub}</span>}
+    <button className={`scene-card ${selected ? 'selected' : ''}`} onClick={onPick} data-lang={lang}>
+      <img src={langScene[lang]} alt="" />
+      <span className="scene-caption">
+        <span className="grow">
+          <span className="muted small block">{caption}</span>
+          <strong>{label}</strong>
+        </span>
+        <span className="go flip-rtl" aria-hidden="true">→</span>
       </span>
-      <span className="flip-rtl" aria-hidden="true">→</span>
     </button>
   );
 }

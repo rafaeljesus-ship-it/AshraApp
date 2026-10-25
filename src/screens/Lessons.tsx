@@ -1,24 +1,31 @@
 import { lessonById, tracks } from '../content/lessons';
 import { lessonStatus } from '../domain/progress';
 import { useApp } from '../state/AppContext';
-import { Page } from '../ui/Chrome';
-import { trackScene } from '../ui/art';
+import { Avatar } from '../ui/Avatar';
+import { learnerFor, scenes, trackCard } from '../ui/art';
+
+const SOON_NODES = 3;
 
 export function Lessons({ onOpenLesson }: { onOpenLesson: (id: string) => void }) {
   const { state, s, path } = useApp();
+  const active = tracks.filter((t) => !t.comingSoon);
+  const soon = tracks.filter((t) => t.comingSoon);
+
   return (
-    <Page title={s.lessonsTitle}>
-      {tracks.map((tr) => (
-        <section key={tr.id} className="stack">
-          <h2>{tr.title[state.native]}</h2>
-          {tr.comingSoon ? (
-            <div className="trail-map soon" role="status">
-              <img src={trackScene[tr.id]} alt="" className="map-scene" />
-              <span className="pill">🔒 {s.comingSoon}</span>
-            </div>
-          ) : (
-            <div className="trail-map">
-            <img src={trackScene[tr.id]} alt="" className="map-scene" />
+    <main className="screen with-tabs map-screen">
+      <img className="map-bg" src={scenes.pyramids} alt="" />
+      {active.map((tr) => {
+        const done = tr.lessonIds.filter((id) => lessonStatus(path, id) === 'completed').length;
+        return (
+          <section key={tr.id} className="stack">
+            <header className="map-head">
+              <Avatar id={learnerFor(state.native)} size={52} />
+              <div className="map-title">
+                <h1>{s.lessonsTitle}</h1>
+                <p>{s.trailTitle(tr.title[state.native])}</p>
+                <progress className="bar" max={tr.lessonIds.length} value={done} aria-label={tr.title[state.native]} />
+              </div>
+            </header>
             <ol className="trail">
               {tr.lessonIds.map((id, i) => {
                 const lesson = lessonById(id)!;
@@ -36,11 +43,26 @@ export function Lessons({ onOpenLesson }: { onOpenLesson: (id: string) => void }
                   </li>
                 );
               })}
+              {Array.from({ length: SOON_NODES }, (_, k) => (
+                <li key={`soon-${k}`}>
+                  <div className="trail-node locked" aria-label={s.soonNode}>
+                    <span className="node-badge" aria-hidden="true">🔒</span>
+                    <span className="node-label"><span className="muted small">{s.soonNode}</span></span>
+                  </div>
+                </li>
+              ))}
             </ol>
-            </div>
-          )}
-        </section>
-      ))}
-    </Page>
+          </section>
+        );
+      })}
+      <ul className="list soon-list">
+        {soon.map((tr) => (
+          <li key={tr.id} className="soon-card" role="status">
+            <img src={trackCard[tr.id]} alt="" />
+            <span><strong className="block">{tr.title[state.native]}</strong><span className="small">🔒 {s.comingSoon}</span></span>
+          </li>
+        ))}
+      </ul>
+    </main>
   );
 }

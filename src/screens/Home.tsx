@@ -4,18 +4,9 @@ import { currentStreak, dailyProgress, dayKey, levelInfo, lessonStatus, recommen
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { StorageWarning } from '../ui/Chrome';
-import { trackScene } from '../ui/art';
+import { learnerFor, trackCard, trackScene } from '../ui/art';
 
-// Illustrated art from the refined asset pack (see DESIGN.md "Asset integration").
-const trackArt = trackScene;
-// Scene vignettes (with characters) for the track cards.
-const trackCard: Record<string, string> = {
-  basico: '/assets/vignettes/basico.png',
-  conversas: '/assets/vignettes/conversas.png',
-  cultura: '/assets/vignettes/cultura.png',
-};
-/** Guide of the culture being learned: Fadia (Egypt) or Claudia (Brazil). */
-const guideBust = { 'ar-EG': 'fadia', 'pt-BR': 'claudia' } as const;
+/** Learner portrait: Rafa (learns Arabic) or Ali (learns Portuguese). */
 
 export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: string) => void; onOpenLessons: () => void }) {
   const { state, s, path } = useApp();
@@ -31,25 +22,22 @@ export function Home({ onOpenLesson, onOpenLessons }: { onOpenLesson: (id: strin
   return (
     <main className="screen with-tabs">
       <StorageWarning />
-      <header className="hero-card">
-        <img className="hero-bg" src={trackArt.basico} alt="" />
-        <div className="hero-text">
-          <div className="row">
-            <Avatar id="nour" size={48} />
-            <h1>{s.hello(name)}</h1>
-          </div>
-          <p>{s.letsLearn}</p>
+      <header className="home-head">
+        <Avatar id={learnerFor(state.native)} size={64} />
+        <div className="grow">
+          <h1>{s.hello(name)}</h1>
+          <p className="muted">{s.letsLearn}</p>
           <span className="path-chip">{s.path(state.native, state.target)}</span>
-          <span className="streak-pill" aria-label={`${s.streak}: ${s.dayStreakShort(streak)}`}>
-            <img src="/assets/icons/streak.png" alt="" className="mini-icon" /> {s.dayStreakShort(streak)}
-          </span>
         </div>
-        <img className="hero-bust" src={`/characters/bust/${guideBust[state.target]}.png`} alt="" />
+        <span className="flame-badge" aria-label={`${s.streak}: ${s.dayStreakShort(streak)}`}>
+          <img src="/assets/icons/streak.png" alt="" />
+          <small>{s.dayStreakShort(streak)}</small>
+        </span>
       </header>
 
       {lesson ? (
         <button className="card recommended" onClick={() => onOpenLesson(lesson.id)}>
-          <span className="thumb"><img src={trackArt[lesson.trackId] ?? trackArt.basico} alt="" /></span>
+          <span className="thumb"><img src={trackScene[lesson.trackId] ?? trackScene.basico} alt="" /></span>
           <span className="grow">
             <span className="eyebrow">{s.recommended}</span>
             <strong className="block">{lesson.title[state.native]}</strong>

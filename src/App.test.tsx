@@ -13,6 +13,7 @@ async function onboard(user: ReturnType<typeof userEvent.setup>, native: 'pt' | 
   await user.click(screen.getByRole('button', { name: /começar/i }));
   await user.click(document.querySelector(`[data-lang="${native === 'pt' ? 'pt-BR' : 'ar-EG'}"]`) as HTMLElement);
   await user.click(document.querySelector(`[data-lang="${native === 'pt' ? 'ar-EG' : 'pt-BR'}"]`) as HTMLElement);
+  await user.click(screen.getByRole('button', { name: /^continuar$|^متابعة$/i }));
   await user.type(screen.getByLabelText(/como podemos|بماذا/i), 'Rafa');
   await user.click(screen.getByRole('button', { name: /começar|ابدأ/i }));
 }
@@ -101,6 +102,7 @@ describe('reverse direction (ar → pt) uses real RTL', () => {
     expect(document.documentElement.dir).toBe('rtl');
     expect(document.documentElement.lang).toBe('ar');
     await user.click(document.querySelector('[data-lang="pt-BR"]') as HTMLElement);
+    await user.click(screen.getByRole('button', { name: /^متابعة$/ }));
     await user.type(screen.getByLabelText(/بماذا/), 'علي');
     await user.click(screen.getByRole('button', { name: /ابدأ/ }));
     expect(screen.getByRole('heading', { name: /علي/ })).toBeInTheDocument();
