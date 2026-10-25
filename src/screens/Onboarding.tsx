@@ -5,6 +5,7 @@ import { useApp } from '../state/AppContext';
 import { Logo } from '../ui/Logo';
 import { Txt } from '../ui/Txt';
 import { Avatar } from '../ui/Avatar';
+import { Scene } from '../ui/Scene';
 
 type Step = 'welcome' | 'native' | 'target' | 'name';
 
@@ -25,7 +26,8 @@ export function Onboarding() {
       )}
 
       {step === 'welcome' && (
-        <section className="center stack">
+        <section className="center stack welcome">
+          <div className="hero"><Scene name="egypt" className="hero-scene" /></div>
           <Logo size={96} />
           <h1 className="brand">ASHRA</h1>
           <p className="tagline">{s.tagline}</p>
@@ -101,6 +103,7 @@ function LangCard({ lang, selected, label, sub, onPick }: {
 }) {
   return (
     <button className={`card choice-card ${selected ? 'selected' : ''}`} onClick={onPick} data-lang={lang}>
+      <span className="thumb wide"><Scene name={lang === 'ar-EG' ? 'egypt' : 'brazil'} /></span>
       <span className="grow">
         <strong>{label}</strong>
         {sub && <span className="muted block">{sub}</span>}

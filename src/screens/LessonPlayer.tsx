@@ -75,9 +75,10 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
   if (phase === 'result' && result) {
     const earned = achievementDefs.filter((a) => result.newAchievements.includes(a.id));
     return (
+      <div className="result-bg">
       <main className="screen lesson result">
         <div className="center stack">
-          <div className="stars" aria-hidden="true">⭐</div>
+          <div className="stars" aria-hidden="true"><span>⭐</span><span className="big">⭐</span><span>⭐</span></div>
           <h1>{s.resultTitle}</h1>
           <Avatar id="nour" size={96} />
         </div>
@@ -93,8 +94,9 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
             <span><span className="eyebrow">{s.newAchievement}</span><strong className="block">{a.title[state.native]}</strong></span>
           </div>
         ))}
-        <button className="btn primary" onClick={onExit}>{s.continue}</button>
+        <button className="btn gold" onClick={onExit}>{s.continue}</button>
       </main>
+      </div>
     );
   }
 
@@ -143,12 +145,17 @@ function ChoiceView({ ex, onDone }: { ex: ChoiceExercise; onDone: (ok: boolean) 
           const cls = checked ? (i === ex.correctIndex ? 'right' : i === picked ? 'wrong' : '') : picked === i ? 'selected' : '';
           return (
             <button key={i} className={`card option ${cls}`} aria-pressed={picked === i} disabled={checked} onClick={() => setPicked(i)}>
-              <Txt lang={o.lang} className="option-text">{o.text}</Txt>
-              {o.translit && <span className="muted small block" dir="ltr">{o.translit}</span>}
+              <span className="option-body">
+                <Txt lang={o.lang} className="option-text">{o.text}</Txt>
+                {o.translit && <span className="muted small block" dir="ltr">{o.translit}</span>}
+              </span>
+              {(cls === 'right' || cls === 'selected') && <span className="mark" aria-hidden="true">✓</span>}
+              {cls === 'wrong' && <span className="mark" aria-hidden="true">✕</span>}
             </button>
           );
         })}
       </div>
+      <div className="action-bar">
       {!checked ? (
         <button className="btn primary" disabled={picked === null} onClick={() => setChecked(true)}>{s.check}</button>
       ) : (
@@ -159,6 +166,7 @@ function ChoiceView({ ex, onDone }: { ex: ChoiceExercise; onDone: (ok: boolean) 
           onNext={() => onDone(ok)}
         />
       )}
+      </div>
     </section>
   );
 }
@@ -185,11 +193,13 @@ function BuildView({ ex, onDone }: { ex: BuildExercise; onDone: (ok: boolean) =>
           <button key={i} className="chip" disabled={checked || placed.includes(i)} onClick={() => setPlaced([...placed, i])}>{tok}</button>
         ))}
       </div>
+      <div className="action-bar">
       {!checked ? (
         <button className="btn primary" disabled={placed.length === 0} onClick={() => setChecked(true)}>{s.check}</button>
       ) : (
         <Feedback ok={ok} answer={<Txt lang={ex.targetLang}>{ex.answer.join(' ')}</Txt>} onNext={() => onDone(ok)} />
       )}
+      </div>
     </section>
   );
 }

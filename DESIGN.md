@@ -37,3 +37,17 @@ Os assets finais **não estão disponíveis como arquivos individuais**, então 
 ## Próximos passos de design
 
 Mapa de trilha ilustrado, tela de resultado com confete e Nour animado (leve), tela "Conheça seus guias" dedicada, ajuste fino a partir de testes com usuários.
+
+## Refinamento visual v1 (comparação com a referência)
+
+**Diagnóstico (MVP inicial → referência):** a referência é ilustrada e imersiva (cenários do Egito/Brasil, mapa de trilha desenhado, tela de recompensa escura e festiva, personagens 3D). O MVP era plano: cards sem imagem, mapa em lista, recompensa em fundo claro, opções sem marcas de estado.
+
+**Mudanças (somente visuais; comportamento, textos e lógica intactos):**
+- `src/ui/Scene.tsx`: cenários SVG originais e simples (Egito, Brasil, Nilo), sem personagens, usados em boas-vindas, cards de idioma, miniatura da lição recomendada, trilhas e mapa. São *stand-ins* até haver arte final.
+- Home: pílula de sequência no topo, lição recomendada em card claro com miniatura e botão de play, ícones de estatística em círculos coloridos, trilhas com ilustração e degradê.
+- Mapa (aba Lições): trilha com nós circulares (disponível = anel dourado, concluído = dourado, bloqueado = cinza), linha pontilhada e rótulos em pílulas sobre o cenário; trilhas "Em breve" mostram cenário com cadeado.
+- Exercícios: barra de progresso mais grossa com degradê, opções com sombra de "botão", marca ✓/✕ (além da cor), barra de ação fixa embaixo com o feedback.
+- Recompensa: fundo verde-esmeralda com estrelas, título e números dourados, botão dourado.
+- Tudo usa propriedades lógicas, então o RTL continua espelhado corretamente.
+
+**Não alterado:** avatares seguem como placeholders — não existem assets oficiais de personagens no repositório (`public/characters/` não existe) e nenhum foi inventado. Cenários da referência (pirâmides detalhadas, Cristo Redentor etc.) são apenas sugeridos por formas simples.
