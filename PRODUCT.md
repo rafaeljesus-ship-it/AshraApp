@@ -28,7 +28,7 @@ Dicas culturais: aprender árabe → Fadia (Egito); aprender português → Clau
 
 Incluído e funcionando: onboarding, escolha de idiomas, Home (Nur (pontos), nível, sequência, meta diária, lição recomendada, trilhas), lista de lições com estados bloqueada/disponível/concluída, lição completa (múltipla escolha + montagem de frase, feedback imediato, dica cultural, resultado com XP), conquistas básicas, perfil, persistência local, conteúdo em arquivos de dados, testes.
 
-Fora do escopo (não simulado): login, nuvem, pagamentos, IA generativa, áudio/pronúncia, social, ranking, push.
+Fora do escopo (não simulado): login, nuvem, pagamentos, IA generativa, reconhecimento de fala/pronúncia, áudio gravado por nativos, social, ranking, push. Incluído: voz do aparelho (síntese) e sons do jogo, com ajustes no Perfil.
 
 ## Critérios de aceitação do primeiro fluxo
 

@@ -23,6 +23,10 @@ export function loadState(): AppState {
       streak: data.streak ?? base.streak,
       dailyGoal: DAILY_GOALS.includes(data.dailyGoal as never) ? data.dailyGoal! : base.dailyGoal,
       daily: data.daily && typeof data.daily.xp === 'number' ? data.daily : base.daily,
+      sound: {
+        effects: typeof data.sound?.effects === 'boolean' ? data.sound.effects : base.sound.effects,
+        voice: typeof data.sound?.voice === 'boolean' ? data.sound.voice : base.sound.voice,
+      },
       achievements: Array.isArray(data.achievements) ? data.achievements : [],
       processedAttempts: Array.isArray(data.processedAttempts) ? data.processedAttempts : [],
     };

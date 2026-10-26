@@ -98,6 +98,8 @@ export interface AppState {
   dailyGoal: number;
   /** Nur earned on `day` (local date) across all paths; resets when the day changes. */
   daily: { day: string | null; xp: number };
+  /** Sound settings: synthesized game sounds and automatic speech of answers. */
+  sound: { effects: boolean; voice: boolean };
   achievements: string[];
   /** Attempt ids already rewarded (capped) so XP is granted once per completion. */
   processedAttempts: string[];

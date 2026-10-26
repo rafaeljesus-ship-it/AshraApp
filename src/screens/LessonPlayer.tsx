@@ -1,14 +1,16 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { characterById } from '../content/characters';
 import { allLessonIds, lessonById } from '../content/lessons';
 import { buildExercises, isBuildCorrect } from '../domain/exercises';
 import type { CompletionResult } from '../domain/progress';
 import { achievementDefs, dayKey } from '../domain/progress';
-import type { BuildExercise, ChoiceExercise } from '../domain/types';
+import type { BuildExercise, ChoiceExercise, Lang } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { Avatar } from '../ui/Avatar';
 import { Txt } from '../ui/Txt';
 import { goldIcon, nourPose, scenes } from '../ui/art';
+import { SpeakButton } from '../ui/SpeakButton';
+import { useAudio } from '../audio/useAudio';
 
 type Phase = 'exercise' | 'tip' | 'result';
 
@@ -27,6 +29,12 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
   const [bestCombo, setBestCombo] = useState(0);
   const [phase, setPhase] = useState<Phase>('exercise');
   const [result, setResult] = useState<CompletionResult | null>(null);
+  const { say: sayPhrase, play: playSfxLocal } = useAudio();
+  useEffect(() => {
+    if (!result) return;
+    playSfxLocal(result.goalReachedNow ? 'goal' : 'win');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
 
   if (!lesson || exercises.length === 0) {
     return (
@@ -116,6 +124,7 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
                 <Txt lang={state.target} className="say-text">{target}</Txt>
                 {state.target === 'ar-EG' && <span className="small block" dir="ltr">{ph.arTranslit}</span>}
               </span>
+              <SpeakButton text={target} lang={state.target} onSay={sayPhrase} />
             </div>
           );
         })()}
@@ -166,13 +175,14 @@ export function LessonPlayer({ lessonId, onExit }: { lessonId: string; onExit: (
   );
 }
 
-function Feedback({ ok, answer, note, onNext }: { ok: boolean; answer: React.ReactNode; note?: string; onNext: () => void }) {
+function Feedback({ ok, answer, note, listen, onNext }: { ok: boolean; answer: React.ReactNode; note?: string; listen?: React.ReactNode; onNext: () => void }) {
   const { s } = useApp();
   return (
     <div className={`feedback ${ok ? 'ok' : 'bad'}`} role="status" aria-live="polite">
       <strong>{ok ? `✓ ${s.correct}` : `✗ ${s.incorrect}`}</strong>
       {!ok && <p>{s.correctAnswer} {answer}</p>}
       {note && <p className="small">{note}</p>}
+      {listen}
       <button className="btn primary" onClick={onNext} autoFocus>{s.next} →</button>
     </div>
   );
@@ -180,6 +190,7 @@ function Feedback({ ok, answer, note, onNext }: { ok: boolean; answer: React.Rea
 
 function ChoiceView({ ex, onDone }: { ex: ChoiceExercise; onDone: (ok: boolean) => void }) {
   const { state, s } = useApp();
+  const { say, autoSay, play, problem } = useAudio();
   const lesson = lessonById(ex.id.split(':')[0])!;
   const phrase = lesson.phrases.find((p) => p.id === ex.phraseId)!;
   const [picked, setPicked] = useState<number | null>(null);
@@ -194,23 +205,27 @@ function ChoiceView({ ex, onDone }: { ex: ChoiceExercise; onDone: (ok: boolean) 
         {ex.options.map((o, i) => {
           const cls = checked ? (i === ex.correctIndex ? 'right' : i === picked ? 'wrong' : '') : picked === i ? 'selected' : '';
           return (
-            <button key={i} className={`card option ${cls}`} aria-pressed={picked === i} disabled={checked} onClick={() => setPicked(i)}>
-              <span className="option-body">
-                <Txt lang={o.lang} className="option-text">{o.text}</Txt>
-                {o.translit && <span className="muted small block" dir="ltr">{o.translit}</span>}
-              </span>
-              {(cls === 'right' || cls === 'selected') && <span className="mark" aria-hidden="true">✓</span>}
-              {cls === 'wrong' && <span className="mark" aria-hidden="true">✕</span>}
-            </button>
+            <div key={i} className="option-row">
+              <button className={`card option ${cls}`} aria-pressed={picked === i} disabled={checked} onClick={() => { setPicked(i); play('tap'); }}>
+                <span className="option-body">
+                  <Txt lang={o.lang} className="option-text">{o.text}</Txt>
+                  {o.translit && <span className="muted small block" dir="ltr">{o.translit}</span>}
+                </span>
+                {(cls === 'right' || cls === 'selected') && <span className="mark" aria-hidden="true">✓</span>}
+                {cls === 'wrong' && <span className="mark" aria-hidden="true">✕</span>}
+              </button>
+              <SpeakButton text={o.text} lang={o.lang} onSay={say} />
+            </div>
           );
         })}
       </div>
       <div className="action-bar">
       {!checked ? (
-        <button className="btn primary" disabled={picked === null} onClick={() => setChecked(true)}>{s.check}</button>
+        <button className="btn primary" disabled={picked === null} onClick={() => { setChecked(true); play(ok ? 'correct' : 'wrong'); autoSay(correct.text, correct.lang); }}>{s.check}</button>
       ) : (
         <Feedback
           ok={ok}
+          listen={<ListenRow text={correct.text} lang={correct.lang} say={say} problem={problem} />}
           answer={<><Txt lang={correct.lang}>{correct.text}</Txt>{correct.translit && <> ({correct.translit})</>}</>}
           note={[phrase.note?.[state.target], state.target === 'ar-EG' ? s.translitNote : ''].filter(Boolean).join(' ')}
           onNext={() => onDone(ok)}
@@ -223,6 +238,7 @@ function ChoiceView({ ex, onDone }: { ex: ChoiceExercise; onDone: (ok: boolean) 
 
 function BuildView({ ex, onDone }: { ex: BuildExercise; onDone: (ok: boolean) => void }) {
   const { s } = useApp();
+  const { say, autoSay, play, problem } = useAudio();
   const [placed, setPlaced] = useState<number[]>([]); // indexes into ex.bank
   const [checked, setChecked] = useState(false);
   const words = placed.map((i) => ex.bank[i]);
@@ -240,16 +256,28 @@ function BuildView({ ex, onDone }: { ex: BuildExercise; onDone: (ok: boolean) =>
       </div>
       <div className="slots bank" dir={ex.targetLang === 'ar-EG' ? 'rtl' : 'ltr'} lang={ex.targetLang === 'ar-EG' ? 'ar' : 'pt-BR'} role="group" aria-label={s.buildBank}>
         {ex.bank.map((tok, i) => (
-          <button key={i} className="chip" disabled={checked || placed.includes(i)} onClick={() => setPlaced([...placed, i])}>{tok}</button>
+          <button key={i} className="chip" disabled={checked || placed.includes(i)} onClick={() => { setPlaced([...placed, i]); play('tap'); }}>{tok}</button>
         ))}
       </div>
       <div className="action-bar">
       {!checked ? (
-        <button className="btn primary" disabled={placed.length === 0} onClick={() => setChecked(true)}>{s.check}</button>
+        <button className="btn primary" disabled={placed.length === 0} onClick={() => { setChecked(true); play(ok ? 'correct' : 'wrong'); autoSay(ex.answer.join(' '), ex.targetLang); }}>{s.check}</button>
       ) : (
-        <Feedback ok={ok} answer={<Txt lang={ex.targetLang}>{ex.answer.join(' ')}</Txt>} onNext={() => onDone(ok)} />
+        <Feedback ok={ok} listen={<ListenRow text={ex.answer.join(' ')} lang={ex.targetLang} say={say} problem={problem} />} answer={<Txt lang={ex.targetLang}>{ex.answer.join(' ')}</Txt>} onNext={() => onDone(ok)} />
       )}
       </div>
     </section>
+  );
+}
+
+function ListenRow({ text, lang, say, problem }: { text: string; lang: Lang; say: (t: string, l: Lang, slow?: boolean) => void; problem: string | null }) {
+  const { s } = useApp();
+  return (
+    <div className="listen-row">
+      <SpeakButton text={text} lang={lang} onSay={say} />
+      <SpeakButton text={text} lang={lang} onSay={say} slow />
+      {lang === 'ar-EG' && <span className="small muted">{s.voiceDialect}</span>}
+      {problem && <span className="small voice-problem" role="alert">{problem}</span>}
+    </div>
   );
 }

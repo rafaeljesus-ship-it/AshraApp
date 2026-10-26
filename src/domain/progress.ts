@@ -25,6 +25,7 @@ export const initialState = (): AppState => ({
   streak: { count: 0, lastDay: null },
   dailyGoal: DEFAULT_DAILY_GOAL,
   daily: { day: null, xp: 0 },
+  sound: { effects: true, voice: true },
   achievements: [],
   processedAttempts: [],
 });

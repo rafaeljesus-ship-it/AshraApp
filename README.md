@@ -67,3 +67,11 @@ Recomendação: **Capacitor** — empacota o build web (`dist/`) em app Android 
 - O texto de interface em árabe foi escrito de forma simples e também precisa de revisão.
 - Seleção de nível inicial foi omitida: com só duas lições ela não mudaria nada.
 - Os testes cobrem lógica e o fluxo no jsdom; **não foram feitos testes em dispositivo real**.
+
+## Som e voz
+
+- **Voz das frases** (`src/audio/voice.ts`): usa a síntese de voz do aparelho (Web Speech API), sem custo e sem arquivos de áudio. Botão de alto-falante em cada opção, em "Ouvir" e "Lento" no feedback e na frase aprendida da tela de resultado. A voz é escolhida por idioma: árabe egípcio (`ar-EG`) → qualquer árabe (`ar-SA`, …); português do Brasil (`pt-BR`) → qualquer português. Se o aparelho não tiver voz para o idioma (ou o navegador não suportar), o app avisa na tela em vez de ficar mudo sem explicação.
+- **Limitação importante:** é voz de máquina do aparelho, não de falante nativo. Em árabe a voz costuma ser do árabe padrão/saudita, não egípcio; a interface avisa isso. Para ensinar pronúncia de verdade, gravar áudios com falantes nativos é o caminho (os arquivos entrariam no lugar da voz de máquina).
+- **Sons do jogo** (`src/audio/sfx.ts`): toques, acerto, erro, lição concluída e meta batida, sintetizados no navegador (sem arquivos).
+- **Ajustes** no Perfil → "Som e voz": ligar/desligar sons do jogo, ler respostas automaticamente e testar a voz. Preferências ficam salvas no aparelho.
+- Não incluído: reconhecimento de fala (microfone), que continua fora do escopo.

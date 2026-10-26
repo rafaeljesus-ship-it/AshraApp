@@ -3,10 +3,16 @@ import { currentStreak, dayKey, getPath, levelInfo } from '../domain/progress';
 import { DAILY_GOALS, LANGS, otherLang } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { Page } from '../ui/Chrome';
+import { Txt } from '../ui/Txt';
 import { Avatar } from '../ui/Avatar';
+import { learnerFor } from '../ui/art';
+import { useAudio } from '../audio/useAudio';
+import { SpeakButton } from '../ui/SpeakButton';
 
 export function Profile() {
-  const { state, s, path, switchPath, reset, setDailyGoal } = useApp();
+  const { state, s, path, switchPath, reset, setDailyGoal, setSound } = useApp();
+  const { say, play, problem } = useAudio();
+  const sample = state.target === 'ar-EG' ? 'أهلاً وسهلاً' : 'Seja bem-vindo';
   const lv = levelInfo(path.xp);
   const streak = currentStreak(state, dayKey(new Date()));
   const done = Object.keys(path.completed).length;
@@ -14,7 +20,7 @@ export function Profile() {
   return (
     <Page title={s.profileTitle}>
       <div className="row">
-        <Avatar id="rafa" size={64} />
+        <Avatar id={learnerFor(state.native)} size={64} />
         <div className="grow">
           <h2>{state.name || s.defaultName}</h2>
           <p className="muted">{s.level} {lv.level}</p>
@@ -44,6 +50,26 @@ export function Profile() {
             </button>
           ))}
         </div>
+      </section>
+
+      <section className="stack">
+        <h2>{s.soundTitle}</h2>
+        <p className="muted small">{s.soundHint}</p>
+        <div className="toggle-list">
+          <button className="toggle" role="switch" aria-checked={state.sound.effects} onClick={() => { setSound({ effects: !state.sound.effects }); if (!state.sound.effects) setTimeout(() => play('correct'), 0); }}>
+            <span className="grow">{s.soundEffects}</span><span className="switch" aria-hidden="true" />
+            <span className="visually-hidden">{state.sound.effects ? s.on : s.off}</span>
+          </button>
+          <button className="toggle" role="switch" aria-checked={state.sound.voice} onClick={() => setSound({ voice: !state.sound.voice })}>
+            <span className="grow">{s.voiceAuto}</span><span className="switch" aria-hidden="true" />
+            <span className="visually-hidden">{state.sound.voice ? s.on : s.off}</span>
+          </button>
+        </div>
+        <div className="row">
+          <SpeakButton text={sample} lang={state.target} onSay={say} label={s.voiceTest} />
+          <span className="grow">{s.voiceTest}: <Txt lang={state.target}>{sample}</Txt></span>
+        </div>
+        {problem && <p className="small voice-problem" role="alert">{problem}</p>}
       </section>
 
       <section className="stack">

@@ -133,3 +133,7 @@ Reorganização das mesmas pranchas em pastas. Inspeção:
 - `hi_res_screens/`: 3 mockups em 1170 px, guardados reduzidos (780 px) em `docs/reference/telas_hires/` como referência de detalhe.
 
 Para sair do ciclo de recortes de baixa resolução, os assets precisam ser **gerados individualmente** com os prompts de `docs/PROMPTS_ASSETS_GPT.md` (1024 px, fundo magenta, sem texto).
+
+## Voz e som
+
+Botões redondos de alto-falante (borda verde) ao lado de cada opção; no feedback, "Ouvir" e "Lento" (pílula dourada com tartaruga) e aviso de dialeto. Perfil: interruptores "Sons do jogo" e "Ler as respostas em voz alta" e botão "Testar voz".

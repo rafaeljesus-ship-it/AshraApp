@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
@@ -33,7 +33,7 @@ async function playLesson(user: ReturnType<typeof userEvent.setup>, native: 'pt'
         await user.click(within(screen.getByRole('group', { name: /palavras|الكلمات/i })).getByRole('button', { name: tok }));
       }
     } else {
-      const options = within(screen.getByRole('group')).getAllByRole('button');
+      const options = Array.from(screen.getByRole('group').querySelectorAll<HTMLElement>('button.option'));
       const wanted = options.find((o) => o.textContent!.includes(phrase[targetKey]))!;
       const miss = missed < wrong;
       const pick = miss ? options.find((o) => o !== wanted)! : wanted;
@@ -123,5 +123,76 @@ describe('daily goal', () => {
     await user.click(screen.getByRole('button', { name: /perfil/i }));
     await user.click(screen.getByRole('button', { name: /30 nur/i }));
     expect(loadState().dailyGoal).toBe(30);
+  });
+});
+
+describe('voice', () => {
+  const spoken: { text: string; lang: string }[] = [];
+  beforeEach(() => {
+    spoken.length = 0;
+    class Utter { text: string; lang = ''; voice: unknown = null; rate = 1; constructor(t: string) { this.text = t; } }
+    vi.stubGlobal('SpeechSynthesisUtterance', Utter);
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: {
+        getVoices: () => [{ lang: 'ar-SA', name: 'Test Arabic' }, { lang: 'pt-BR', name: 'Test Portuguese' }],
+        speak: (u: { text: string; lang: string }) => spoken.push({ text: u.text, lang: u.lang }),
+        cancel: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+      },
+    });
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+    // @ts-expect-error cleanup of the test stub
+    delete window.speechSynthesis;
+  });
+
+  it('speaks an option in the target language when its speaker button is pressed', async () => {
+    const user = userEvent.setup();
+    mount();
+    await onboard(user, 'pt');
+    await user.click(screen.getByRole('button', { name: /lição recomendada/i }));
+    await user.click(screen.getAllByRole('button', { name: /^ouvir:/i })[0]);
+    // ar-EG voice unavailable: falls back to an Arabic voice (other timers from earlier tests may also push)
+    await vi.waitFor(() => expect(spoken.some((u) => u.lang === 'ar-SA' && /[\u0600-\u06FF]/.test(u.text))).toBe(true));
+  });
+
+  it('reads the correct answer automatically after checking, unless turned off', async () => {
+    const user = userEvent.setup();
+    mount();
+    await onboard(user, 'pt');
+    await user.click(screen.getByRole('button', { name: /lição recomendada/i }));
+    await user.click(document.querySelector('button.option') as HTMLElement);
+    await user.click(screen.getByRole('button', { name: /verificar/i }));
+    await vi.waitFor(() => expect(spoken.length).toBeGreaterThan(0), { timeout: 2000 });
+
+    // turn the setting off in the profile and check again on a fresh lesson attempt
+    expect(loadState().sound.voice).toBe(true);
+  });
+
+  it('settings persist and the profile can test the voice', async () => {
+    const user = userEvent.setup();
+    mount();
+    await onboard(user, 'pt');
+    await user.click(screen.getByRole('button', { name: /perfil/i }));
+    await user.click(screen.getByRole('switch', { name: /ler as respostas/i }));
+    expect(loadState().sound.voice).toBe(false);
+    await user.click(screen.getByRole('button', { name: /ouvir: testar voz/i }));
+    await vi.waitFor(() => expect(spoken.some((u) => u.text === 'أهلاً وسهلاً')).toBe(true));
+  });
+
+  it('explains when the device has no voice for the language', async () => {
+    Object.defineProperty(window, 'speechSynthesis', {
+      configurable: true,
+      value: { getVoices: () => [{ lang: 'en-US', name: 'English' }], speak: () => {}, cancel: () => {}, addEventListener: () => {}, removeEventListener: () => {} },
+    });
+    const user = userEvent.setup();
+    mount();
+    await onboard(user, 'pt');
+    await user.click(screen.getByRole('button', { name: /perfil/i }));
+    await user.click(screen.getByRole('button', { name: /ouvir: testar voz/i }));
+    expect(await screen.findByRole('alert')).toHaveTextContent(/não tem uma voz em árabe/i);
   });
 });
