@@ -61,6 +61,22 @@ export async function speak(text: string, lang: Lang, opts: { slow?: boolean } =
   }
 }
 
+/** Short description of the installed voices, for the help text ("3 voices: en-US, pt-BR, …"). */
+export function describeVoices(): string {
+  try {
+    if (!speechSupported()) return '';
+    const langs = [...new Set(window.speechSynthesis.getVoices().map((v) => v.lang))];
+    return langs.length ? langs.slice(0, 8).join(', ') : '';
+  } catch { return ''; }
+}
+
+export type Platform = 'ios' | 'android' | 'desktop';
+export function detectPlatform(ua = typeof navigator === 'undefined' ? '' : navigator.userAgent): Platform {
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+  if (/Android/i.test(ua)) return 'android';
+  return 'desktop';
+}
+
 export function stopSpeaking() {
   try { if (speechSupported()) window.speechSynthesis.cancel(); } catch { /* ignore */ }
 }

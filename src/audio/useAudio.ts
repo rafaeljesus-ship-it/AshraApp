@@ -3,7 +3,8 @@ import type { Lang } from '../domain/types';
 import { useApp } from '../state/AppContext';
 import { playSfx } from './sfx';
 import type { Sfx } from './sfx';
-import { speak } from './voice';
+import { playClip } from './clips';
+import { describeVoices, detectPlatform, speak } from './voice';
 import type { VoiceStatus } from './voice';
 
 /** Sound + voice helpers that respect the saved settings. */
@@ -12,11 +13,15 @@ export function useAudio() {
   const [problem, setProblem] = useState<string | null>(null);
 
   const report = useCallback((status: VoiceStatus, lang: Lang) => {
-    setProblem(status === 'ok' ? null : status === 'unsupported' ? s.voiceUnsupported : s.voiceMissing(s.langNameShort(lang)));
+    if (status === 'ok') return setProblem(null);
+    if (status === 'unsupported') return setProblem(s.voiceUnsupported);
+    const found = describeVoices();
+    setProblem([s.voiceMissing(s.langNameShort(lang)), s.voiceHelp[detectPlatform()], found ? s.voicesFound(found) : ''].filter(Boolean).join(' '));
   }, [s]);
 
   /** Explicit listen request (button): always tries to speak. */
   const say = useCallback(async (text: string, lang: Lang, slow = false) => {
+    if (await playClip(text, lang, slow)) { setProblem(null); return; }
     report(await speak(text, lang, { slow }), lang);
   }, [report]);
 

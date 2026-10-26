@@ -1,0 +1,12 @@
+﻿id,portugues,arabe_egipcio,transliteracao,arquivo_pt,arquivo_ar
+bom-dia,Bom dia,صباح الخير,Sabah el-kheir,public/audio/pt-BR/bom-dia.mp3,public/audio/ar-EG/bom-dia.mp3
+boa-noite,Boa noite,مساء الخير,Masa' el-kheir,public/audio/pt-BR/boa-noite.mp3,public/audio/ar-EG/boa-noite.mp3
+bem-vindo,Seja bem-vindo,أهلاً وسهلاً,Ahlan wa sahlan,public/audio/pt-BR/bem-vindo.mp3,public/audio/ar-EG/bem-vindo.mp3
+tudo-bem,Tudo bem?,إزيك؟,Ezzayyak?,public/audio/pt-BR/tudo-bem.mp3,public/audio/ar-EG/tudo-bem.mp3
+tchau,Tchau,مع السلامة,Ma'a es-salama,public/audio/pt-BR/tchau.mp3,public/audio/ar-EG/tchau.mp3
+obrigado,Obrigado,شكراً,Shukran,public/audio/pt-BR/obrigado.mp3,public/audio/ar-EG/obrigado.mp3
+meu-nome,Meu nome é Rafa,اسمي رافا,Ismi Rafa,public/audio/pt-BR/meu-nome.mp3,public/audio/ar-EG/meu-nome.mp3
+seu-nome,Qual é o seu nome?,إنت اسمك إيه؟,Enta ismak eh?,public/audio/pt-BR/seu-nome.mp3,public/audio/ar-EG/seu-nome.mp3
+do-brasil,Eu sou do Brasil,أنا من البرازيل,Ana min el-Brazil,public/audio/pt-BR/do-brasil.mp3,public/audio/ar-EG/do-brasil.mp3
+do-egito,Eu sou do Egito,أنا من مصر,Ana min Masr,public/audio/pt-BR/do-egito.mp3,public/audio/ar-EG/do-egito.mp3
+prazer,Prazer em conhecer,اتشرفنا,Etsharrafna,public/audio/pt-BR/prazer.mp3,public/audio/ar-EG/prazer.mp3

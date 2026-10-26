@@ -75,3 +75,7 @@ Recomendação: **Capacitor** — empacota o build web (`dist/`) em app Android 
 - **Sons do jogo** (`src/audio/sfx.ts`): toques, acerto, erro, lição concluída e meta batida, sintetizados no navegador (sem arquivos).
 - **Ajustes** no Perfil → "Som e voz": ligar/desligar sons do jogo, ler respostas automaticamente e testar a voz. Preferências ficam salvas no aparelho.
 - Não incluído: reconhecimento de fala (microfone), que continua fora do escopo.
+
+### Áudio gravado (recomendado para pronúncia)
+
+O app toca primeiro um **arquivo gravado** (`public/audio/<idioma>/<id-da-frase>.mp3`, listado em `public/audio/manifest.json`) e só usa a voz do aparelho quando não há arquivo. Assim a pronúncia fica igual em qualquer celular, inclusive sem voz em árabe instalada. Lista das frases a gravar: `docs/AUDIO_LISTA_GRAVACAO.md` (e `.csv`). Depois de colocar os MP3: `python3 tools/build_audio_manifest.py`. Quando a voz do aparelho falha, o app mostra os passos para instalar a voz (iPhone, Android ou computador) e quais vozes o aparelho tem.
