@@ -123,3 +123,13 @@ Comparação tela a tela com `docs/reference/jornada_visual_ashra.jpeg` e `docs/
 | Trilha | lista em cartão | tela cheia com cenário, cabeçalho "Trilha: Básico" com progresso, nós ligados por linha pontilhada; 3 nós "Em breve" bloqueados (sem conteúdo ainda) |
 
 **Ainda diferente da referência (pendente):** introdução da lição com o guia grande + balão + microfone (exige áudio/fala), tela "Seu progresso" com semana de sequência, aba Explorar, sino de notificações, e a arte final do grupo em alta resolução (usar o prompt "Grupo — selfie dos seis").
+
+## Pacote `ASHRA_Assets_Organizados` (v6) — avaliado, nada integrado ao app
+
+Reorganização das mesmas pranchas em pastas. Inspeção:
+- `characters/`, `expressions*/`, `bio_cards/`, `app_screens/`, `scenes/`, `cards/`, `ui/`, `branding/`: recortes de 100–310 px, **com texto/legendas embutidos** (placas de nome, botões "Continuar", cartões "Básico", logo com slogan) e pedaços dos vizinhos nas bordas; fundos opacos. Inferiores aos recortes já integrados (v3/v4) e contra a regra de texto só no app.
+- `hero_group_banner.png` (1536×353): bom banner com os seis, mas com logo, slogan (pt/ar) e nomes manuscritos gravados na imagem. Pode servir de apoio visual, não como asset de interface.
+- `icons/`, `backgrounds/`: 100×113 e 384×135 px; já temos versões melhores (`public/assets/gold`, `scenes`).
+- `hi_res_screens/`: 3 mockups em 1170 px, guardados reduzidos (780 px) em `docs/reference/telas_hires/` como referência de detalhe.
+
+Para sair do ciclo de recortes de baixa resolução, os assets precisam ser **gerados individualmente** com os prompts de `docs/PROMPTS_ASSETS_GPT.md` (1024 px, fundo magenta, sem texto).
